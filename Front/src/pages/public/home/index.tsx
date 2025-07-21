@@ -3,6 +3,9 @@ import Presentation from "../presentation";
 
 export default function Home() {
     return (
-        <><Presentation/><AboutUs/></>
+        <div className="flex flex-col gap-0">
+            <Presentation/>
+            <AboutUs/>
+        </div>
             )
 }

@@ -1,15 +1,15 @@
 export default function RegistrationForm() {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-white px-6 py-10">
-            <div className="mx-auto w-full max-w-xl border border-black shadow-md p-8 rounded-md">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm mb-10">
+            <div className="flex flex-col flex-grow justify-center items-center bg-white px-6 py-4 lg:px-8 box-border w-full">
+                <div className="w-full max-w-3xl border  shadow-md p-8 rounded-md">
+                <div className="mx-auto w-full mb-10">
                     <h1 className="text-center text-2xl font-bold tracking-tight text-gray-900">
                         Create a new account
                     </h1>
                 </div>
-                <form className="space-y-8">
+                <form className="space-y-8 w-full">
                     {/* Row 1 : First & Last Name */}
-                    <div className="flex gap-6 justify-center">
+                    <div className="flex gap-6 justify-center w-full">
                         <div className="w-1/2">
                             <label
                                 htmlFor="firstname"
@@ -43,7 +43,7 @@ export default function RegistrationForm() {
                     </div>
 
                     {/* Row 2 : Phone & Email */}
-                    <div className="flex gap-6 justify-center">
+                    <div className="flex gap-6 justify-center w-full">
                         <div className="w-1/2">
                             <label
                                 htmlFor="phone"
@@ -77,7 +77,7 @@ export default function RegistrationForm() {
                     </div>
 
                     {/* Password */}
-                    <div className="w-1/2 mx-auto">
+                    <div className="w-full max-w-md mx-auto">
                         <label
                             htmlFor="password"
                             className="block text-sm font-medium text-gray-900 mb-2 text-center"

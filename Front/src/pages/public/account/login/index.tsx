@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 
 export default function LoginForm() {
     return (
-        <div className="flex h-screen flex-col items-center justify-center bg-white px-6 py-10 lg:px-8 box-border">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="flex flex-col flex-grow justify-center items-center bg-white px-6 py-4 lg:px-8 box-border w-full">
+            <div className="sm:mx-auto sm:w-full">
                 <h1 className="text-center text-2xl font-bold tracking-tight text-gray-900">
                     Sign in to your account
                 </h1>
             </div>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm mt-6">
-                <form action="#" method="POST" className="space-y-6">
+            <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl">
+                <form action="#" method="POST" className="space-y-6 w-full">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                             Email address
