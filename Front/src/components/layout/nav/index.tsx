@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
-import imga from "./favicon.svg"
+import imga from "../img.png"
 
 export default function Nav() {
     return (
         <nav className="bg-white fixed w-full z-10 top-0 start-0 border-b border-gray-200 ">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                    <img src={imga} className="h8 w-8 sm:h-16 sm:w-16" alt="arganisme Cosmetics Logo" />
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-800 hidden sm:block">
-  Arganisme Cosmetics
-</span>
+                    <img
+                        src={imga}
+                        className="h-auto sm:h-16" // garde la hauteur responsive, mais laisse la largeur naturelle
+                        alt="arganisme Cosmetics Logo"
+                    />
+
 
                 </Link>
 
@@ -18,7 +20,7 @@ export default function Nav() {
                         to="/login"
                         className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
                     >
-                        Sign in
+                        Log in
                     </Link>
                     <button
                         data-collapse-toggle="navbar-sticky"
