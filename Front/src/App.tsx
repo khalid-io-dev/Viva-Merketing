@@ -7,6 +7,7 @@
     import Registrationform from "./pages/public/account/registration";
     import Blogs from "../src/pages/public/blogs/index.tsx";
     import '../ressources/css/app.css';
+    import 'flowbite';
     import Layout from "../src/components/layout/index.tsx"
 
     function App() {
