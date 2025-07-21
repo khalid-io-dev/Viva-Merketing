@@ -2,7 +2,7 @@
 
 export default function AboutUs() {
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-800">
+        <div id="about" className="min-h-screen bg-gray-50 text-gray-800">
             <header className="bg-white shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold">About Us</h1>
@@ -63,7 +63,7 @@ export default function AboutUs() {
                             <img
                                 src="https://randomuser.me/api/portraits/women/65.jpg"
                                 alt="Sara Lee"
-                                className="w-24 h-24 rounded-full mb-4 object-cover"
+                                className="w-45  h-45 mb-4 object-cover"
                             />
                             <h4 className="font-bold text-lg">Sara Lee</h4>
                             <p className="text-sm text-gray-500 mb-2">Marketing Manager</p>
