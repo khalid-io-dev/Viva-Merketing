@@ -11,14 +11,12 @@ export default function Nav() {
                         className="h-auto sm:h-16" // garde la hauteur responsive, mais laisse la largeur naturelle
                         alt="arganisme Cosmetics Logo"
                     />
-
-
                 </Link>
 
                 <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                     <Link
                         to="/login"
-                        className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
+                        className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                     >
                         Log in
                     </Link>
@@ -51,7 +49,7 @@ export default function Nav() {
                         <li>
                             <Link
                                 to="/"
-                                className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
+                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                                 aria-current="page"
                             >
                                 Home
@@ -60,7 +58,7 @@ export default function Nav() {
                         <li>
                             <Link
                                 to="/about"
-                                className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
+                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                             >
                                 About
                             </Link>
@@ -68,7 +66,7 @@ export default function Nav() {
                         <li>
                             <Link
                                 to="/products"
-                                className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
+                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                             >
                                 Products
                             </Link>
@@ -76,7 +74,7 @@ export default function Nav() {
                         <li>
                             <Link
                                 to="/contact"
-                                className="block py-2 px-3 text-emerald-600 rounded-sm hover:text-emerald-700 md:p-0"
+                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                             >
                                 Contact
                             </Link>
