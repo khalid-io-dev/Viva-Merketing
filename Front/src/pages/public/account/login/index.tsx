@@ -1,15 +1,15 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginForm() {
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 py-24 lg:px-8">
+        <div className="flex h-screen flex-col items-center justify-center bg-white px-6 py-10 lg:px-8 box-border">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h1 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-center text-2xl font-bold tracking-tight text-gray-900">
                     Sign in to your account
                 </h1>
             </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm mt-6">
                 <form action="#" method="POST" className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-900">
@@ -22,7 +22,7 @@ export default function LoginForm() {
                                 name="email"
                                 autoComplete="email"
                                 required
-                                className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 border border-black outline-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                             />
                         </div>
                     </div>
@@ -45,7 +45,7 @@ export default function LoginForm() {
                                 name="password"
                                 autoComplete="current-password"
                                 required
-                                className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 border border-black outline-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                             />
                         </div>
                     </div>
@@ -53,7 +53,7 @@ export default function LoginForm() {
                     <div>
                         <button
                             type="submit"
-                            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition"
                         >
                             Sign in
                         </button>
@@ -61,8 +61,10 @@ export default function LoginForm() {
                 </form>
 
                 <p className="mt-10 text-center text-sm text-gray-600">
-                    Not a member?{' '}
-                    <Link to="/registration" className="hover:text-emerald-600 me-4 md:me-6">Click here to register !</Link>
+                    Not a member?{" "}
+                    <Link to="/registration" className="text-indigo-600 hover:text-indigo-700">
+                        Click here to register!
+                    </Link>
                 </p>
             </div>
         </div>
