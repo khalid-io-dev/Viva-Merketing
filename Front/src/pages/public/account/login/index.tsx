@@ -1,59 +1,71 @@
 import { Link } from "react-router-dom";
 
-const products = [
-    {
-        id: 1,
-        name: "Hydrating Serum",
-        description: "Deeply moisturizes your skin.",
-        price: "29.99€",
-        imageUrl: "https://via.placeholder.com/300x200"
-    },
-    {
-        id: 2,
-        name: "Argan Oil Shampoo",
-        description: "Nourishes and repairs hair.",
-        price: "19.99€",
-        imageUrl: "https://via.placeholder.com/300x200"
-    },
-    {
-        id: 3,
-        name: "Rose Face Cream",
-        description: "Smooth and gentle daily cream.",
-        price: "24.99€",
-        imageUrl: "https://via.placeholder.com/300x200"
-    }
-];
-
-export default function ProductList() {
+export default function LoginForm() {
     return (
-        <div className="bg-white py-12 px-6 lg:px-8 w-full min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">Our Products</h1>
+        <div className="flex flex-col flex-grow justify-center items-center bg-white px-6 py-4 lg:px-8 box-border w-full">
+            <div className="sm:mx-auto sm:w-full">
+                <h1 className="text-center text-2xl font-bold tracking-tight text-gray-900">
+                    Sign in to your account
+                </h1>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {products.map((product) => (
-                        <div
-                            key={product.id}
-                            className="bg-white rounded-md border border-gray-200 shadow-sm hover:shadow-md transition p-4 flex flex-col items-center"
-                        >
-                            <img
-                                src={product.imageUrl}
-                                alt={product.name}
-                                className="w-full h-48 object-cover rounded-md mb-4"
+            <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl">
+                <form action="#" method="POST" className="space-y-6 w-full">
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+                            Email address
+                        </label>
+                        <div className="mt-2.5">
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                required
+                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                             />
-                            <h2 className="text-lg font-semibold text-gray-900">{product.name}</h2>
-                            <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-                            <p className="text-emerald-600 font-bold text-base mt-2">{product.price}</p>
-
-                            <Link
-                                to={`/product/${product.id}`}
-                                className="mt-4 w-full inline-block text-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition"
-                            >
-                                View Product
-                            </Link>
                         </div>
-                    ))}
-                </div>
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                                Password
+                            </label>
+                            <div className="text-sm">
+                                <a href="#" className="font-semibold text-emerald-600 hover:text-emerald-500">
+                                    Forgot password?
+                                </a>
+                            </div>
+                        </div>
+                        <div className="mt-2.5">
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                autoComplete="current-password"
+                                required
+                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <button
+                            type="submit"
+                            className="block w-full rounded-md bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+                        >
+                            Sign in
+                        </button>
+                    </div>
+                </form>
+
+                <p className="mt-10 text-center text-sm text-gray-600">
+                    Not a member?{" "}
+                    <Link to="/registration" className="text-emerald-600 hover:text-emerald-700">
+                        Click here to register!
+                    </Link>
+                </p>
             </div>
         </div>
     );
