@@ -24,7 +24,7 @@ export default function Contact() {
                                     name="first-name"
                                     id="first-name"
                                     autoComplete="given-name"
-                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                     placeholder="John"
                                 />
                             </div>
@@ -38,7 +38,7 @@ export default function Contact() {
                                     name="last-name"
                                     id="last-name"
                                     autoComplete="family-name"
-                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                     placeholder="Doe"
                                 />
                             </div>
@@ -52,7 +52,7 @@ export default function Contact() {
                                     name="email"
                                     id="email"
                                     autoComplete="email"
-                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                     placeholder="john.doe@example.com"
                                 />
                             </div>
@@ -66,7 +66,7 @@ export default function Contact() {
                                     name="phone-number"
                                     id="phone-number"
                                     placeholder="+212-675435234"
-                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                 />
                             </div>
 
@@ -78,7 +78,7 @@ export default function Contact() {
                                     id="message"
                                     name="message"
                                     rows={4}
-                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                     placeholder="Your message here..."
                                 ></textarea>
                             </div>
@@ -87,7 +87,7 @@ export default function Contact() {
 
                         <button
                             type="submit"
-                            className="w-full rounded-md bg-indigo-600 px-4 py-3 text-white font-semibold shadow hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition"
+                            className="w-full rounded-md bg-emerald-600 px-4 py-3 text-white font-semibold shadow hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
                         >
                             Let's Talk
                         </button>
