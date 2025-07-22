@@ -6,3 +6,10 @@ html, body, #root {
     height: 100%;
     width: 100%;
 }
+
+
+#Cart:hover {
+    #box-contenu {
+        display : flex;
+          }
+}

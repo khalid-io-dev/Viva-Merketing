@@ -84,21 +84,6 @@ export default function Contact() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-x-3">
-                            <input
-                                id="agree-to-policies"
-                                name="agree-to-policies"
-                                type="checkbox"
-                                className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label htmlFor="agree-to-policies" className="text-sm text-gray-600">
-                                I agree to the{' '}
-                                <a href="#" className="font-semibold text-indigo-600 hover:underline">
-                                    privacy policy
-                                </a>
-                                .
-                            </label>
-                        </div>
 
                         <button
                             type="submit"

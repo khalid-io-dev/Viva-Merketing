@@ -3,6 +3,7 @@
     import About from "../src/pages/public/about/index.tsx";
     import Contact from "../src/pages/public/contact/index.tsx";
     import Products from "../src/pages/public/products/index.tsx";
+    import Cart from "../src/pages/public/Cart/index.tsx";
     import LoginForm from "./pages/public/account/login";
     import Registrationform from "./pages/public/account/registration";
     import Blogs from "../src/pages/public/blogs/index.tsx";
@@ -19,6 +20,7 @@
                     <Route path="/products" element={<Layout><Products /></Layout>} />
                     <Route path="/contact" element={<Layout><Contact /></Layout>} />
                     <Route path="/blogs" element={<Layout><Blogs /></Layout>} />
+                    <Route path="/cart" element={<Layout><Cart /></Layout>} />
                     <Route path="/login" element={<Layout><LoginForm /></Layout>} />
                     <Route path="/registration" element={<Layout><Registrationform /></Layout>} />
                 </Routes>
