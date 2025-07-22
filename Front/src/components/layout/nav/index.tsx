@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import imga from "../img.png"
 
+
 export default function Nav() {
     return (
-        <nav className="bg-white fixed w-full z-10 top-0 start-0 border-b border-gray-200 ">
+        <nav id="navbar" className="bg-white fixed w-full z-10 top-0 start-0 border-b border-gray-200 ">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img
@@ -34,9 +35,9 @@ export default function Nav() {
                 </button>
 
                 <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg
-                                   bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0
-                                   md:bg-white">
+                    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border  rounded-lg
+                                    md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0
+                                   md:bg-transparent">
                         <li>
                             <Link
                                 to="/"
@@ -78,6 +79,22 @@ export default function Nav() {
                                 >
                                     Log in
                                 </Link>
+                            </div>
+                        </li>
+                        <li>
+                            <div id="Cart" className="flex flex-col md:order-2 space-y-8 items-center md:space-x-0 rtl:space-x-reverse">
+                                <Link
+                                    to="/cart"
+                                    className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
+                                >
+                                    Cart (0)
+                                </Link>
+                                <div id="box-contenu" className="absolute flex flex-col items-center p-4 bg-white w-auto h-auto border border-black text-gray-700 pr-1 hidden">
+                                    <h1 className="underline">Cart</h1>
+                                    <div id="contenu" className="flex flex-col items-center">
+                                        <h2>Vous n'avez ajouter aucun produit.</h2>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     </ul>

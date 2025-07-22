@@ -10,7 +10,7 @@ export default function LoginForm() {
             </div>
 
             <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl">
-                <form action="#" method="POST" className="space-y-6 w-full">
+                <form action="http://127.0.0.1:8000/login" method="POST" className="space-y-6 w-full">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                             Email address
