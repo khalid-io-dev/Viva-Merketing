@@ -1,4 +1,4 @@
-import DisplayProductCart from "../products/displayProductCart";
+import DisplayProductCart from "../../../components/cart/displayProductCart";
 import {Link} from "react-router-dom";
 export default function Cart (){
     return (
