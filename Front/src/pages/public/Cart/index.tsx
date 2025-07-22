@@ -37,14 +37,14 @@ export default function Cart (){
                             </div>
                             <a
                                 href="#"
-                                className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition"
+                                className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-300 transition"
                             >
                                 Proceed to Checkout
                             </a>
                             <div className="flex items-center justify-center gap-2">
                                 <span className="text-sm text-gray-500">or</span>
                                 <Link to="/products">
-                                <a href="#" className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 underline hover:no-underline">
+                                <a href="#" className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 underline hover:no-underline">
                                     Continue Shopping
                                 </a>
                                 </Link>
@@ -60,13 +60,13 @@ export default function Cart (){
                                 <input
                                     type="text"
                                     id="voucher"
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
                                     placeholder=""
                                     required
                                 />
                                 <button
                                     type="submit"
-                                    className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition"
+                                    className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-300 transition"
                                 >
                                     Apply Code
                                 </button>
