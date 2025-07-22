@@ -7,9 +7,3 @@ html, body, #root {
     width: 100%;
 }
 
-
-#Cart:hover {
-    #box-contenu {
-        display : flex;
-          }
-}

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import imga from "../img.png"
+import imga from "../ARGAnisme.webp"
 
 
 export default function Nav() {
@@ -81,20 +81,14 @@ export default function Nav() {
                                 </Link>
                             </div>
                         </li>
-                        <li>
-                            <div id="Cart" className="flex flex-col md:order-2 space-y-8 items-center md:space-x-0 rtl:space-x-reverse">
+                        <li className="pl-10">
+                            <div className="flex flex-col md:order-2 space-y-8 items-center md:space-x-0 rtl:space-x-reverse">
                                 <Link
                                     to="/cart"
                                     className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                                 >
                                     Cart (0)
                                 </Link>
-                                <div id="box-contenu" className="absolute flex flex-col items-center p-4 bg-white w-auto h-auto border border-black text-gray-700 pr-1 hidden">
-                                    <h1 className="underline">Cart</h1>
-                                    <div id="contenu" className="flex flex-col items-center">
-                                        <h2>Vous n'avez ajouter aucun produit.</h2>
-                                    </div>
-                                </div>
                             </div>
                         </li>
                     </ul>
