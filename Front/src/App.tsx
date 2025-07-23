@@ -10,6 +10,7 @@
     import '../ressources/css/app.css';
     import 'flowbite';
     import Layout from "../src/components/layout/index.tsx"
+    import Profile from "./pages/public/account/profile";
 
     function App() {
         return (
@@ -23,6 +24,7 @@
                     <Route path="/cart" element={<Layout><Cart /></Layout>} />
                     <Route path="/login" element={<Layout><LoginForm /></Layout>} />
                     <Route path="/registration" element={<Layout><Registrationform /></Layout>} />
+                    <Route path="/profile" element={<Layout><Profile /></Layout>} />
                 </Routes>
             </BrowserRouter>
         );
