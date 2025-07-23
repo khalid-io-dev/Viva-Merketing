@@ -59,7 +59,7 @@ export default function SortMenu(){
                 </div>
             </div>
                 <div className="flex justify-center">
-                    <button className="bg-emerald-600 border border-emerald-900 justify-center w-24" type="button">Sort</button>
+                    <button className="bg-emerald-600 border border-emerald-900 justify-center w-24 rounded hover:bg-emerald-700" type="button">Sort</button>
                 </div>
             </form>
             </div>

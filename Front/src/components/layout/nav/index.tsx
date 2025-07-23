@@ -81,6 +81,14 @@ export default function Nav() {
                                 </Link>
                             </div>
                         </li>
+                        <li>
+                            <Link
+                                to="/profile"
+                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
+                            >
+                                Profile
+                            </Link>
+                        </li>
                         <li className="md:pl-10">
                             <div className="flex flex-col md:order-2 space-y-8 items-center md:space-x-0 rtl:space-x-reverse">
                                 <Link
