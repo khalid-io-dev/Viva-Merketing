@@ -1,6 +1,6 @@
 export default function RegistrationForm() {
     return (
-            <div className="flex flex-col flex-grow justify-center items-center bg-white px-6 py-4 lg:px-8 box-border w-full">
+            <div className="flex flex-col flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 box-border w-full">
                 <div className="w-full max-w-3xl border  shadow-md p-8 rounded-md">
                 <div className="mx-auto w-full mb-10">
                     <h1 className="text-center text-2xl font-bold tracking-tight text-gray-900">

@@ -81,7 +81,7 @@ export default function Nav() {
                                 </Link>
                             </div>
                         </li>
-                        <li className="pl-10">
+                        <li className="md:pl-10">
                             <div className="flex flex-col md:order-2 space-y-8 items-center md:space-x-0 rtl:space-x-reverse">
                                 <Link
                                     to="/cart"

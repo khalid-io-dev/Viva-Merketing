@@ -1,7 +1,7 @@
 import imga from "../../../../ressources/images/imagePres.webp";
 export default function Presentation(){
     return (
-        <div id="presentation" className=" bg-pink-400 text-gray-800 m-0">
+        <div id="presentation" className=" bg-gray-50 text-gray-800 m-0">
             <main>
                 <div id="imgPresentation" className="relative">
                 <img

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Sort from "../../../components/Product/Sort";
+import SortMenu from "../../../components/Product/SortMenu";
 
 interface Product {
     id: number;
@@ -64,28 +64,28 @@ const products: Product[] = [
 
 export default function ProductList() {
     return (
-        <div className="bg-white py-12 px-6 lg:px-8 w-full min-h-screen">
+        <div className="grid-rows-1 lg:grid grid-cols-[250px_1fr] gap-6 bg-gray-50 py-12 px-6 lg:px-8 w-full">
+                <SortMenu />
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Products</h1>
-                <Sort />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"> {/* gap réduit */}
+                    <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start">Our products</h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9"> {/* gap réduit */}
                     {products.map((product) => (
+                        <Link to={`/product/${product.id}`} className="w-full">
                         <div
                             key={product.id}
-                            className="bg-white transition p-2 flex flex-col items-center"
+                            className= "transition flex flex-col items-center border border-gray-200"
                         >
-                            <Link to={`/product/${product.id}`} className="w-full">
                                 <img
                                     src={product.imageUrl}
                                     alt={product.name}
-                                    className="w-full h-82 rounded object-cover mb-2"
+                                    className="w-full h-82 object-cover"
                                 />
-                            </Link>
                             <div className="flex justify-between w-full px-2">
                                 <h2 className="text-ui-fg-subtle text-gray-600">{product.name}</h2>
                                 <p className="text-ui-fg-subtle text-gray-600">{product.price}</p>
                             </div>
                         </div>
+                        </Link>
                     ))}
                 </div>
             </div>
