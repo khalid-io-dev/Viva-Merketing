@@ -3,7 +3,7 @@ import { Footer } from './footer';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
-    <div className="flex flex-col min-h-screen max-w-8xl mx-auto overflow-x-hidden">
+    <div className="flex flex-col min-h-screen max-w-8xl mx-auto overflow-x-hidden bg-gray-50">
         <Navbar />
         <main className="flex flex-col flex-grow pt-24 w-full">
             {children}
