@@ -97,11 +97,11 @@ export default function Contact() {
                     <div className="space-y-6 text-gray-700">
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">Our Office</h3>
-                            <p>123 Avenue de la Beauté<br />Casablanca, Maroc</p>
+                            <p>Lot Maatallah, Berradi II M'Hamid<br />Marrakesh 40000, Maroc</p>
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">Phone</h3>
-                            <p>+212 6 75 43 52 34</p>
+                            <p>+212 6 51 92 53 98</p>
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">Email</h3>
@@ -109,7 +109,7 @@ export default function Contact() {
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">Working Hours</h3>
-                            <p>Lundi – Vendredi: 9h – 18h<br />Samedi: 10h – 14h</p>
+                            <p>Monday – Saturday: 9h – 17h</p>
                         </div>
                     </div>
                 </div>
