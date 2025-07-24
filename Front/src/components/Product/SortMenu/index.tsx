@@ -2,7 +2,8 @@ import PriceSlider from "./PriceSlider";
 import {useState} from "react";
 export default function SortMenu(){
     const categories = ['Cream', 'Oil', 'Savon', 'Other']
-    const [active, setActive] = useState(true);
+    const [activeCategory, setActiveCategory] = useState(true);
+    const [activeFilter, setActiveFilter] = useState(true);
     const down = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"
                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 10 12 16 18 10" />
@@ -15,28 +16,29 @@ export default function SortMenu(){
     </svg>
 
 
-    const CatCurrentSVG = active ? down : up;
+    const CatCurrentSVG = activeCategory ? down : up;
 
-    const handleClick = () => {
-        if (active) setActive(false);
-        else setActive(true);
+    const handleClickCategory = () => {
+        if (activeCategory) setActiveCategory(false);
+        else setActiveCategory(true);
+    }
+    const handleClickFilter = () => {
+        if (activeFilter) setActiveFilter(false);
+        else setActiveFilter(true);
     }
 
     return (
         <div className="flex flex-col bg-gray-50  text-black ">
             <h1 className="hidden md:block max-w-7xl mx-auto text-center text-2xl">Filters</h1>
             <button
-                data-collapse-toggle="filter-sticky"
-                type="button"
+                onClick={() => {handleClickFilter()}}
                 className="block md:hidden max-w-7xl mx-auto text-center text-2xl"
-                aria-controls="filter-sticky"
-                aria-expanded="true"
             >
                 <h1 className="block md:hidden max-w-7xl mx-auto text-center text-2xl border border-black w-24">Filters</h1>
             </button>
 
 
-            <form id="filter-sticky">
+            <form className={activeFilter ? "" : "hidden"}>
             <div className="p-2">
                 <div className="flex items-center gap-2 p-3">
                     <h1 className="text-start">Price</h1>
@@ -66,19 +68,16 @@ export default function SortMenu(){
                 <div className="flex items-center gap-2 p-3">
                     <h1 className="text-start">Category</h1>
                     <button
-                        data-collapse-toggle="category-sticky"
                         type="button"
                         className="text-start" // ✅ bordure supprimée
-                        aria-controls="category-sticky"
-                        aria-expanded="false"
-                        onClick={() => {handleClick()}}
+                        onClick={() => {handleClickCategory()}}
                     >
                         {CatCurrentSVG}
                     </button>
                 </div>
 
 
-                <div className="hidden text-black pl-5 " id="category-sticky">
+                <div className={activeCategory ? "text-black pl-5 " : "hidden text-black pl-5 "}>
                 {
                     categories.map((cat, index) => {
                         return (
