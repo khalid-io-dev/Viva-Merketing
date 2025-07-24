@@ -83,10 +83,10 @@ export default function Nav() {
                         </li>
                         <li>
                             <Link
-                                to="/profile"
+                                to="/detail"
                                 className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
                             >
-                                Profile
+                                Detail
                             </Link>
                         </li>
                         <li className="md:pl-10">

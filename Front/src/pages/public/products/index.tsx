@@ -31,34 +31,6 @@ const products: Product[] = [
         description: "Hydrate et protège vos lèvres toute la journée.",
         imageUrl: "../../../../product.webp"
     },
-    {
-        id: 4,
-        name: "Baume à lèvres",
-        price: "7.50€",
-        description: "Hydrate et protège vos lèvres toute la journée.",
-        imageUrl: "../../../../product.webp"
-    },
-    {
-        id: 5,
-        name: "Baume à lèvres",
-        price: "7.50€",
-        description: "Hydrate et protège vos lèvres toute la journée.",
-        imageUrl: "../../../../product.webp"
-    },
-    {
-        id: 6,
-        name: "Baume à lèvres",
-        price: "7.50€",
-        description: "Hydrate et protège vos lèvres toute la journée.",
-        imageUrl: "../../../../product.webp"
-    },
-    {
-        id: 7,
-        name: "Baume à lèvres",
-        price: "7.50€",
-        description: "Hydrate et protège vos lèvres toute la journée.",
-        imageUrl: "../../../../product.webp"
-    },
     // Ajoute d'autres produits si besoin
 ];
 

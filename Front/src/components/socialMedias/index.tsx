@@ -1,7 +1,7 @@
 
 const SocialMedia= () => {
     return (
-        <div className="col-span-4 sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1">
+        <div className="col-span-4 sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 hidden md:flex">
             <ul className="mb-4 -ml-2 flex md:order-1 md:mb-0">
 
 
