@@ -11,6 +11,7 @@
     import 'flowbite';
     import Layout from "../src/components/layout/index.tsx"
     import Profile from "./pages/public/account/profile";
+    import DetailProduct from "./pages/public/products/detail";
 
     function App() {
         return (
@@ -25,6 +26,7 @@
                     <Route path="/login" element={<Layout><LoginForm /></Layout>} />
                     <Route path="/registration" element={<Layout><Registrationform /></Layout>} />
                     <Route path="/profile" element={<Layout><Profile /></Layout>} />
+                    <Route path="/detail" element={<Layout><DetailProduct /></Layout>} />
                 </Routes>
             </BrowserRouter>
         );

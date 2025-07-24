@@ -3,8 +3,8 @@ import SocialMedia from "../../socialMedias";
 
 export function Footer() {
     return (
-        <footer className="border-t border-gray-200 w-full bg-white">
-            <div className="w-full h-32 mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+            <footer className="border-t border-gray-200 w-full bg-white">
+            <div className="w-full h-32 mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between sm:grid grid-cols-2">
                 <span className="text-sm text-gray-500 sm:text-center">
                     © 2025 <span className="text-emerald-600 font-semibold">Arganisme Cosmetics™</span>. All Rights Reserved.
                 </span>
