@@ -1,6 +1,27 @@
 import PriceSlider from "./PriceSlider";
+import {useState} from "react";
 export default function SortMenu(){
     const categories = ['Cream', 'Oil', 'Savon', 'Other']
+    const [active, setActive] = useState(true);
+    const down = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"
+                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 10 12 16 18 10" />
+        <polyline points="6 18 12 24 18 18" />
+    </svg>
+
+    const up = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 24 12 18 18 24" />
+        <polyline points="6 16 12 10 18 16" />
+    </svg>
+
+
+    const CatCurrentSVG = active ? down : up;
+
+    const handleClick = () => {
+        if (active) setActive(false);
+        else setActive(true);
+    }
+
     return (
         <div className="flex flex-col bg-gray-50  text-black ">
             <h1 className="hidden md:block max-w-7xl mx-auto text-center text-2xl">Filters</h1>
@@ -42,8 +63,22 @@ export default function SortMenu(){
 
                 </div>
 
-                <h1 className="text-start p-3">Category</h1>
-                <div className=" text-black pl-5">
+                <div className="flex items-center gap-2 p-3">
+                    <h1 className="text-start">Category</h1>
+                    <button
+                        data-collapse-toggle="category-sticky"
+                        type="button"
+                        className="text-start" // ✅ bordure supprimée
+                        aria-controls="category-sticky"
+                        aria-expanded="false"
+                        onClick={() => {handleClick()}}
+                    >
+                        {CatCurrentSVG}
+                    </button>
+                </div>
+
+
+                <div className="hidden text-black pl-5 " id="category-sticky">
                 {
                     categories.map((cat, index) => {
                         return (
