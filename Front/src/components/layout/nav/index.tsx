@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import imga from "../ARGAnisme.webp"
 
-
 export default function Nav() {
     return (
-        <nav id="navbar" className="bg-white fixed w-full z-10 top-0 start-0 border-b border-gray-200 ">
+        <nav id="navbar" className= { "bg-gray-50 fixed h-[90px] w-full z-10 top-0 start-0 border-b border-gray-200 uppercase font-sans"}>
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img
@@ -47,14 +46,13 @@ export default function Nav() {
                                 Home
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                to="/about"
-                                className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
-                            >
-                                About
-                            </Link>
-                        </li>
+                        <Link
+                            to="/#services"
+                            className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0"
+                            aria-current="page"
+                        >
+                            <a href="#services" className="block py-2 px-3 text-black rounded-sm hover:text-emerald-700 md:p-0">Services</a>
+                        </Link>
                         <li>
                             <Link
                                 to="/products"
