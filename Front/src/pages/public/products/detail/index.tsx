@@ -2,7 +2,6 @@ import imga from "../../../../../product.webp";
 import imga2 from "../../../../../ressources/images/product2.webp"
 import imga3 from "../../../../../ressources/images/product3.webp"
 import {useState} from "react";
-import Line from "../../../../components/tools/Line";
 
 export default function DetailProduct() {
     const [hover, setHover] = useState(imga)

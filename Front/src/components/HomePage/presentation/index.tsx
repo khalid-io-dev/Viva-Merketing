@@ -1,7 +1,7 @@
-import { useState } from "react";
-import img1 from "../../../ressources/images/caroussel/img1.webp";
-import img2 from "../../../ressources/images/caroussel/img2.webp";
-import img3 from "../../../ressources/images/caroussel/img3.webp";
+import {useEffect, useState} from "react";
+import img1 from "../../../../ressources/images/caroussel/img1.webp";
+import img2 from "../../../../ressources/images/caroussel/img2.webp";
+import img3 from "../../../../ressources/images/caroussel/img3.webp";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Image {
@@ -45,6 +45,13 @@ export default function Presentation() {
     const nextSlide = () => {
         setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
+
+    useEffect(() => {
+        const time = setTimeout(() => {
+            nextSlide();
+        }, 7000)
+        return () => clearTimeout(time);
+    }, [nextSlide]);
 
     return (
         <div id="presentation" className="relative bg-gray-50 text-gray-800 w-full overflow-hidden">

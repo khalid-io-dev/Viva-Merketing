@@ -1,15 +1,15 @@
-import Presentation from "../../../components/presentation";
-import Services from "../../../components/services";
-import WhyUs from "../../../components/WhyUs";
-import Organisations from "../../../components/organisations";
+import Services from "../../../components/HomePage/services";
+import WhyUs from "../../../components/HomePage/WhyUs";
+import Organisations from "../../../components/HomePage/organisations";
+import Label from "../../../components/HomePage/label";
 
 export default function Home() {
     return (
         <div className="flex flex-col gap-0">
-            <Presentation />
             <Services />
             <WhyUs />
             <Organisations />
+            <Label />
         </div>
             )
 }
