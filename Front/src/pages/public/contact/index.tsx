@@ -1,6 +1,6 @@
 export default function Contact() {
     return (
-        <div className="flex flex-col flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 box-border w-full">
+        <div className="flex flex-col flex-grow justify-center items-center  px-6 py-4 lg:px-8 box-border w-full">
             <div className=" mx-auto max-w-7xl w-full">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">

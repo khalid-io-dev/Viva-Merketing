@@ -28,7 +28,7 @@ export default function SortMenu(){
     }
 
     return (
-        <div className="flex flex-col bg-white  text-black ">
+        <div className="flex flex-col  text-black ">
             <h1 className="hidden md:block max-w-7xl mx-auto text-center text-2xl">Filters</h1>
             <button
                 onClick={() => {handleClickFilter()}}

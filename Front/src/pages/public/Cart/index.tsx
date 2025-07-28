@@ -2,7 +2,7 @@ import DisplayProductCart from "../../../components/cart/displayProductCart";
 import {Link} from "react-router-dom";
 export default function Cart (){
     return (
-        <section className="bg-gray-50 py-8 antialiased">
+        <section className=" py-8 antialiased">
             <div className="mx-auto max-w-screen-xl px-4">
                 <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Shopping Cart</h2>
 

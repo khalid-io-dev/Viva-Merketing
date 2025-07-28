@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function LoginForm() {
     return (
-        <div className="flex flex-col flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 box-border w-full">
+        <div className="flex flex-col flex-grow justify-center items-center px-6 py-6 lg:px-8 box-border w-full">
             <div className="sm:mx-auto sm:w-full">
                 <h1 className="text-center text-5xl md:text-2xl font-bold tracking-tight text-gray-900">
                     Sign in to your account

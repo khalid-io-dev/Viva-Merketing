@@ -38,7 +38,7 @@ const products: Product[] = [
 
 export default function ProductList() {
     return (
-        <div className="grid-rows-1 lg:grid grid-cols-[250px_1fr] gap-6 bg-white px-6 lg:px-8 h-full w-full py-12">
+        <div className="grid-rows-1 lg:grid grid-cols-[250px_1fr] gap-6 px-6 lg:px-8 h-full w-full py-12">
                 <SortMenu />
             <div className="max-w-7xl mx-auto">
                     <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start">Our products</h1>
