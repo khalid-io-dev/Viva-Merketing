@@ -17,11 +17,12 @@ const products: Product[] = [
         description: "Une crème légère et nourrissante pour tous types de peau.",
         imageUrl: "product.webp"
     },
+
     {
-        id: 2,
-        name: "Sérum visage",
-        price: "24.99€",
-        description: "Un sérum concentré pour raviver l’éclat naturel de votre peau.",
+        id: 3,
+        name: "Baume à lèvres",
+        price: "7.50€",
+        description: "Hydrate et protège vos lèvres toute la journée.",
         imageUrl: "../../../../product.webp"
     },
     {
@@ -31,12 +32,13 @@ const products: Product[] = [
         description: "Hydrate et protège vos lèvres toute la journée.",
         imageUrl: "../../../../product.webp"
     },
+
     // Ajoute d'autres produits si besoin
 ];
 
 export default function ProductList() {
     return (
-        <div className="grid-rows-1 lg:grid grid-cols-[250px_1fr] gap-6 bg-gray-50 py-12 px-6 lg:px-8 w-full">
+        <div className="grid-rows-1 lg:grid grid-cols-[250px_1fr] gap-6 bg-white px-6 lg:px-8 h-full w-full py-12">
                 <SortMenu />
             <div className="max-w-7xl mx-auto">
                     <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start">Our products</h1>
@@ -50,7 +52,7 @@ export default function ProductList() {
                                 <img
                                     src={product.imageUrl}
                                     alt={product.name}
-                                    className="w-full h-82 object-cover"
+                                    className="w-full h-64 object-cover"
                                 />
                             <div className="flex justify-between w-full px-2">
                                 <h2 className="text-ui-fg-subtle text-gray-600">{product.name}</h2>

@@ -8,7 +8,7 @@ export default function Organisations(){
     const description = "Our products are recognized by this great organizations.\n"
          + "We love to work with them"
     return (
-        <div className="bg-white pl-6 pr-6">
+        <div className=" pl-6 pr-6">
             <div className="flex flex-col bg-[#E6F0F1] w-full h-full items-center p-24">
             <h1 className="text-4xl text-black uppercase font-mono">{title}</h1>
             <p className="text-xl   text-gray-800 p-2 font-normal">{description}</p>

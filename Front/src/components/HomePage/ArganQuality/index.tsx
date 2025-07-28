@@ -1,3 +1,5 @@
+import {JSX} from "react";
+
 export default function ArganQuality() {
 
     interface informations {
@@ -91,7 +93,7 @@ export default function ArganQuality() {
 
 
     return (
-        <div className="flex flex-col items-center bg-white border border-gray-50 ">
+        <div className="flex flex-col items-center  ">
             <div className="items-center p-16">
             <h1 className="text-4xl text-black font-mono item">100% Pure organic Argan oil</h1>
         </div>
