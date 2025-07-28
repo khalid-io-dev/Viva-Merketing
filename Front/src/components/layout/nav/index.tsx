@@ -60,8 +60,8 @@ export default function Nav() {
                 </button>
 
                 <div
-                    className={`items-start justify-between hidden w-full md:flex md:w-auto md:order-1 transition-colors duration-500 ${
-                        isHomePage && transparent ? "text-white" : "text-black"
+                    className={`items-start  justify-between hidden w-full md:flex md:w-auto md:order-1 transition-colors duration-500 ${
+                        isHomePage && transparent ? "text-white " : "text-black bg-gray-50 md:bg-transparent sm:rounded-b"
                     }`}
                     id="navbar-sticky"
                 >
