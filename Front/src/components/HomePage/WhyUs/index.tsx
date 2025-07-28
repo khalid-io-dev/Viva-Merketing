@@ -34,7 +34,7 @@ export default function WhyUs(){
     ];
 
     return (
-        <div className="flex flex-col w-full h-full items-center">
+        <div className="flex flex-col w-full h-full items-center pl-6 pr-6">
             <div className="flex flex-col md:grid grid-cols-3 w-full h-auto">
                 {sec.map((section) => (
                     <div className={section.color + " flex flex-col items-center w-full h-full p-20"}>
