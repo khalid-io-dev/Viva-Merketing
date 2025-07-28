@@ -1,55 +1,57 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminOrderController;
+use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application.
-| These routes are loaded by the RouteServiceProvider within a group 
-| which is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-// Public routes
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login',    [AuthController::class, 'login']);
-Route::get('categories', [CategoryController::class, 'index']);
-Route::get('products',   [ProductController::class, 'index']);
-Route::get('products/{id}', [ProductController::class, 'show']);
+Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [UserController::class, 'profile']);
+    Route::put('/profile', [UserController::class, 'update']);
+    
+    Route::get('/users', [UserController::class, 'index'])->middleware('role:admin');
+    Route::get('/users/{id}', [UserController::class, 'show'])->middleware('role:admin');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('role:admin');
 
-// Protected routes - need authentication via Sanctum
-Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'addItem']);
+    Route::put('/cart/items/{itemId}', [CartController::class, 'updateItem']);
+    Route::delete('/cart/items/{itemId}', [CartController::class, 'removeItem']);
+    Route::delete('/cart', [CartController::class, 'clear']);
 
-    // Auth
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('me',      [UserController::class, 'profile']);
-    Route::put('me',      [UserController::class, 'updateProfile']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
 
-    // Cart
-    Route::get('cart',         [CartController::class, 'show']);
-    Route::post('cart/add',    [CartController::class, 'addItem']);
-    Route::post('cart/remove', [CartController::class, 'removeItem']);
-    Route::post('cart/clear',  [CartController::class, 'clear']);
+    Route::prefix('admin')->middleware('role:admin')->group(function () {
+        Route::get('/products', [AdminProductController::class, 'index']);
+        Route::post('/products', [AdminProductController::class, 'store']);
+        Route::put('/products/{id}', [AdminProductController::class, 'update']);
+        Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
 
-    // Orders
-    Route::post('orders',        [OrderController::class, 'store']);  // place order
-    Route::get('orders',         [OrderController::class, 'index']);  // user orders
-    Route::get('orders/{id}',    [OrderController::class, 'show']);   // single order details
-
-    // Admin-only routes (middleware to restrict)
-    Route::middleware('can:isAdmin')->group(function () {
-        Route::apiResource('admin/products', AdminProductController::class);
-        Route::apiResource('admin/orders', AdminOrderController::class);
+        Route::get('/orders', [AdminOrderController::class, 'index']);
+        Route::get('/orders/{id}', [AdminOrderController::class, 'show']);
+        Route::put('/orders/{id}', [AdminOrderController::class, 'update']);
+        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy']);
     });
+});
+
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 });
