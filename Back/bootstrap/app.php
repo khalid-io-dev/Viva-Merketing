@@ -14,18 +14,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Apply ForceJsonResponse middleware to all API routes
         $middleware->group('api', [
+            \Illuminate\Http\Middleware\HandleCors::class,
             ForceJsonResponse::class,
         ]);
         
         $middleware->alias([
-            'role:admin' => AdminMiddleware::class,
+            'admin' => AdminMiddleware::class,  // Simplified from 'role:admin'
             'force.json' => ForceJsonResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Force JSON responses for API routes even on exceptions
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
