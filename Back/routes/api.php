@@ -44,11 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
 
     // Admin routes
-    Route::prefix('admin')->middleware('role:admin')->group(function () {
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('admin')->prefix('admin')->group(function () {  // Changed from 'role:admin'
         Route::get('/products', [AdminProductController::class, 'index']);
         Route::post('/products', [AdminProductController::class, 'store']);
         Route::put('/products/{id}', [AdminProductController::class, 'update']);
         Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
+    });
 
         Route::get('/orders', [AdminOrderController::class, 'index']);
         Route::get('/orders/{id}', [AdminOrderController::class, 'show']);

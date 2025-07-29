@@ -11,10 +11,10 @@ namespace App\Http\Controllers;
 
    class AdminProductController extends Controller
    {
-       public function __construct()
-       {
-           $this->middleware(['auth:sanctum', 'role.admin']);
-       }
+    //    public function __construct()
+    //    {
+    //        $this->middleware(['auth:sanctum', 'role.admin']);
+    //    }
 
        public function index(Request $request)
        {

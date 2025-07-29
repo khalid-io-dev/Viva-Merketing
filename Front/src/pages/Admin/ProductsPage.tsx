@@ -57,56 +57,50 @@ export default function ProductsPage() {
 
   // Make authenticated requests with proper headers
   const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}) => {
-    const defaultHeaders: HeadersInit = {
-      'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-    };
-
-    // Add Authorization header if using token-based auth
-    const token = authService.getToken();
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-
-    // Don't add Content-Type for FormData - let browser set it
-    if (!(options.body instanceof FormData)) {
-      defaultHeaders['Content-Type'] = 'application/json';
-    }
-
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
-      credentials: 'include', // Important for CORS with cookies
-    };
-
-    console.log('🔍 Making request to:', url, 'with config:', config);
-    
-    const response = await fetch(url, config);
-    const text = await response.text();
-    
-    console.log('🔍 Response status:', response.status);
-    console.log('🔍 Response text:', text);
-
-    if (!response.ok) {
-      let errorMessage = `HTTP ${response.status}`;
-      try {
-        const errorData = JSON.parse(text);
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
-        errorMessage = text || errorMessage;
-      }
-      throw new Error(errorMessage);
-    }
-
     try {
-      return JSON.parse(text);
-    } catch {
-      return text;
+        const token = authService.getToken();
+        if (!token) {
+            throw new Error("No authentication token found");
+        }
+
+        const headers: HeadersInit = {
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            Authorization: `Bearer ${token}`,
+        };
+
+        if (!(options.body instanceof FormData)) {
+            headers["Content-Type"] = "application/json";
+        }
+
+        const config: RequestInit = {
+            ...options,
+            headers: { ...headers, ...options.headers },
+            credentials: "include", // Send cookies (e.g., Sanctum session)
+        };
+
+        console.log('🔍 Making request to:', url, 'with config:', config);
+        const response = await fetch(url, config);
+        const text = await response.text();
+        console.log('🔍 Response status:', response.status, 'Response text:', text);
+
+        if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}`;
+            try {
+                const errorData = JSON.parse(text);
+                errorMessage = errorData.message || errorData.error || errorMessage;
+            } catch {
+                errorMessage = text || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+
+        return JSON.parse(text);
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
     }
-  };
+};
 
   // Check admin access
   useEffect(() => {
@@ -120,48 +114,45 @@ export default function ProductsPage() {
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
-      try {
-        console.log("🔍 Fetching categories from:", `${API_URL}/categories`);
-        const data = await makeAuthenticatedRequest(`${API_URL}/categories`);
-        console.log("🔍 Categories response:", data);
-        setCategories(data);
-      } catch (error: any) {
-        console.error("Failed to fetch categories:", error);
-        setErrors({ general: error.message || "Failed to load categories" });
-      }
+        try {
+            console.log("🔍 Fetching categories from:", `${API_URL}/categories`);
+            const response = await fetch(`${API_URL}/categories`, {
+                headers: { Accept: "application/json" },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+            setErrors({ general: "Failed to load categories" });
+        }
     };
     fetchCategories();
-  }, []);
+}, []);
 
   // Fetch products
-  const fetchProducts = async (page: number = 1) => {
-    if (!authService.isAdmin()) return;
-    setLoading(true);
+  const fetchProducts = async () => {
     try {
-      const params = new URLSearchParams({ page: page.toString() });
-      if (search) params.append("search", search);
-      if (categoryFilter) params.append("category_id", categoryFilter);
-
-      console.log("🔍 Fetching products from:", `${API_URL}/admin/products?${params}`);
-      const data: PaginatedResponse = await makeAuthenticatedRequest(`${API_URL}/admin/products?${params}`);
-      console.log("🔍 Products response:", data);
-      
-      setProducts(data.data);
-      setTotalPages(data.last_page);
-      setCurrentPage(data.current_page);
-    } catch (error: any) {
-      console.error("Failed to fetch products:", error);
-      setErrors({ general: error.message || "Failed to fetch products" });
+        setLoading(true);
+        const data = await makeAuthenticatedRequest(`${API_URL}/admin/products?page=1`);
+        setProducts(data.data); // Adjust based on your pagination response
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setErrors({ general: "Failed to load products" });
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
-  useEffect(() => {
-    if (authService.isAdmin()) {
-      fetchProducts();
+useEffect(() => {
+    if (authService.isAuthenticated() && authService.isAdmin()) {
+        fetchProducts();
+    } else {
+        setErrors({ general: "Please log in as admin" });
     }
-  }, [currentPage, search, categoryFilter]);
+}, []);
 
   const handleAddEdit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,306 +259,463 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Products Management</h1>
-
-      {/* Error Message */}
-      {errors.general && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
-          {Array.isArray(errors.general) ? errors.general[0] : errors.general}
-        </div>
-      )}
-
-      {/* Filters */}
-      {authService.isAdmin() && (
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search by name or description"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full md:w-1/3 rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-            disabled={loading}
-          />
-          <select
-            value={categoryFilter}
-            onChange={(e) => {
-              setCategoryFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full md:w-1/3 rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-            disabled={loading}
-          >
-            <option value="">All Categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name} ({category.products_count})
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={openAddModal}
-            className="w-full md:w-auto px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-500 disabled:bg-emerald-400"
-            disabled={loading}
-          >
-            Add Product
-          </button>
-        </div>
-      )}
-
-      {/* Products Table */}
-      {authService.isAdmin() && (
-        <div className="overflow-x-auto bg-white rounded-md shadow">
-          {loading && (
-            <div className="p-4 text-center text-gray-600">
-              Loading...
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Header Section */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+                Products Management
+              </h1>
+              <p className="text-slate-600 text-lg">Manage your inventory with style and precision</p>
             </div>
-          )}
-          <table className="min-w-full">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Image</th>
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Name</th>
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Category</th>
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Price</th>
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Stock</th>
-                <th className="py-3 px-4 border-b text-left text-sm font-medium text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.length === 0 && !loading ? (
-                <tr>
-                  <td colSpan={6} className="py-8 px-4 text-center text-gray-600">
-                    No products found
-                  </td>
-                </tr>
-              ) : (
-                products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="py-3 px-4 border-b">
-                      {product.image ? (
-                        <img
-                          src={`http://localhost:8000/storage/${product.image}`}
-                          alt={product.name}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                          <span className="text-gray-500 text-xs">No Image</span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 border-b font-medium">{product.name}</td>
-                    <td className="py-3 px-4 border-b">{product.category.name}</td>
-                    <td className="py-3 px-4 border-b">${product.price.toFixed(2)}</td>
-                    <td className="py-3 px-4 border-b">{product.stock}</td>
-                    <td className="py-3 px-4 border-b">
-                      <button
-                        onClick={() => openEditModal(product)}
-                        className="text-blue-600 hover:text-blue-800 mr-3 font-medium"
-                        disabled={loading}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="text-red-600 hover:text-red-800 font-medium"
-                        disabled={loading}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Pagination */}
-      {authService.isAdmin() && totalPages > 1 && (
-        <div className="mt-6 flex justify-between items-center">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1 || loading}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-md disabled:bg-gray-100 text-gray-900 hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <span className="text-gray-700 font-medium">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages || loading}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-md disabled:bg-gray-100 text-gray-900 hover:bg-gray-50"
-          >
-            Next
-          </button>
-        </div>
-      )}
+        {/* Error Message */}
+        {errors.general && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
+            <div className="flex items-center">
+              <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+            </div>
+          </div>
+        )}
 
-      {/* Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-md w-full max-w-lg shadow-lg max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {editProduct ? "Edit Product" : "Add Product"}
-            </h2>
-            <form onSubmit={handleAddEdit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Name</label>
+        {/* Filters Section */}
+        {authService.isAdmin() && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 mb-8">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="flex-1 relative">
+                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                  required
+                  placeholder="Search products by name or description..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
                   disabled={loading}
                 />
-                {errors.name && (
-                  <div className="mt-1 text-red-600 text-sm">
-                    {Array.isArray(errors.name) ? errors.name[0] : errors.name}
-                  </div>
-                )}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                  required
-                  disabled={loading}
-                />
-                {errors.description && (
-                  <div className="mt-1 text-red-600 text-sm">
-                    {Array.isArray(errors.description) ? errors.description[0] : errors.description}
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1">Price</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                    min="0"
-                    step="0.01"
-                    required
-                    disabled={loading}
-                  />
-                  {errors.price && (
-                    <div className="mt-1 text-red-600 text-sm">
-                      {Array.isArray(errors.price) ? errors.price[0] : errors.price}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1">Stock</label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                    min="0"
-                    required
-                    disabled={loading}
-                  />
-                  {errors.stock && (
-                    <div className="mt-1 text-red-600 text-sm">
-                      {Array.isArray(errors.stock) ? errors.stock[0] : errors.stock}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Category</label>
+              
+              <div className="lg:w-64 relative">
+                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-4l-3 4 3 4M9 7l-3 4 3 4" />
+                </svg>
                 <select
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                  required
+                  value={categoryFilter}
+                  onChange={(e) => {
+                    setCategoryFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 appearance-none"
                   disabled={loading}
                 >
-                  <option value="">Select Category</option>
+                  <option value="">All Categories</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
-                      {category.name}
+                      {category.name} ({category.products_count})
                     </option>
                   ))}
                 </select>
-                {errors.category_id && (
-                  <div className="mt-1 text-red-600 text-sm">
-                    {Array.isArray(errors.category_id) ? errors.category_id[0] : errors.category_id}
-                  </div>
-                )}
+                <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Image (Optional)</label>
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/jpeg,image/png,image/jpg"
-                  onChange={handleFileChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
-                  disabled={loading}
-                />
-                {editProduct && editProduct.image && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-600 mb-1">Current image:</p>
-                    <img
-                      src={`http://localhost:8000/storage/${editProduct.image}`}
-                      alt="Current"
-                      className="w-24 h-24 object-cover rounded border"
-                    />
-                  </div>
-                )}
-                {errors.image && (
-                  <div className="mt-1 text-red-600 text-sm">
-                    {Array.isArray(errors.image) ? errors.image[0] : errors.image}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end gap-4 pt-4 border-t">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 bg-gray-200 rounded-md text-gray-900 hover:bg-gray-300"
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-500 disabled:bg-emerald-400"
-                >
-                  {loading ? "Saving..." : editProduct ? "Update" : "Add"}
-                </button>
-              </div>
-            </form>
+              
+              <button
+                onClick={openAddModal}
+                className="lg:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 font-medium"
+                disabled={loading}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Add Product</span>
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Products Grid/Table */}
+        {authService.isAdmin() && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+            {loading && (
+              <div className="p-8 text-center">
+                <div className="inline-flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="text-slate-600 font-medium">Loading products...</span>
+                </div>
+              </div>
+            )}
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Image</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Product</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Category</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Price</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Stock</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {products.length === 0 && !loading ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 px-6 text-center">
+                        <div className="flex flex-col items-center space-y-3">
+                          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                          </div>
+                          <div className="text-slate-500 font-medium">No products found</div>
+                          <div className="text-slate-400 text-sm">Try adjusting your search or filters</div>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    products.map((product) => (
+                      <tr key={product.id} className="hover:bg-blue-50/50 transition-colors duration-150">
+                        <td className="py-4 px-6">
+                          <div className="relative">
+                            {product.image ? (
+                              <img
+                                src={`http://localhost:8000/storage/${product.image}`}
+                                alt={product.name}
+                                className="w-16 h-16 object-cover rounded-xl shadow-md ring-2 ring-white"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-md ring-2 ring-white">
+                                <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div>
+                            <div className="font-semibold text-slate-800">{product.name}</div>
+                            <div className="text-sm text-slate-500 line-clamp-2">{product.description}</div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {product.category.name}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="font-bold text-slate-800">${Number(product.price).toFixed(2)}</span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            product.stock > 10 
+                              ? 'bg-green-100 text-green-800' 
+                              : product.stock > 0 
+                                ? 'bg-yellow-100 text-yellow-800' 
+                                : 'bg-red-100 text-red-800'
+                          }`}>
+                            {product.stock} units
+                          </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center space-x-3">
+                            <button
+                              onClick={() => openEditModal(product)}
+                              className="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-150 text-sm font-medium"
+                              disabled={loading}
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(product.id)}
+                              className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-sm font-medium"
+                              disabled={loading}
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {authService.isAdmin() && totalPages > 1 && (
+          <div className="mt-8 bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1 || loading}
+                className="inline-flex items-center px-4 py-2 bg-white/60 border border-slate-200/50 rounded-lg disabled:bg-slate-100 disabled:text-slate-400 text-slate-700 hover:bg-white transition-all duration-150 shadow-sm"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Previous
+              </button>
+              
+              <div className="flex items-center space-x-2">
+                <span className="text-slate-600 font-medium">
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || loading}
+                className="inline-flex items-center px-4 py-2 bg-white/60 border border-slate-200/50 rounded-lg disabled:bg-slate-100 disabled:text-slate-400 text-slate-700 hover:bg-white transition-all duration-150 shadow-sm"
+              >
+                Next
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal */}
+        {modalOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl w-full max-w-2xl shadow-2xl border border-white/20 max-h-[90vh] overflow-y-auto">
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-3xl font-bold text-slate-800">
+                    {editProduct ? "Edit Product" : "Add New Product"}
+                  </h2>
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-150"
+                    disabled={loading}
+                  >
+                    <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <form onSubmit={handleAddEdit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Product Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+                      placeholder="Enter product name..."
+                      required
+                      disabled={loading}
+                    />
+                    {errors.name && (
+                      <div className="mt-2 text-red-600 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.name) ? errors.name[0] : errors.name}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Description</label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      rows={4}
+                      className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-none"
+                      placeholder="Describe your product..."
+                      required
+                      disabled={loading}
+                    />
+                    {errors.description && (
+                      <div className="mt-2 text-red-600 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.description) ? errors.description[0] : errors.description}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Price ($)</label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 font-medium">$</span>
+                        <input
+                          type="number"
+                          name="price"
+                          value={formData.price}
+                          onChange={handleInputChange}
+                          step="0.01"
+                          min="0"
+                          className="w-full pl-8 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+                          placeholder="0.00"
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+                      {errors.price && (
+                        <div className="mt-2 text-red-600 text-sm flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {Array.isArray(errors.price) ? errors.price[0] : errors.price}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Stock Quantity</label>
+                      <input
+                        type="number"
+                        name="stock"
+                        value={formData.stock}
+                        onChange={handleInputChange}
+                        min="0"
+                        className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+                        placeholder="Enter stock quantity..."
+                        required
+                        disabled={loading}
+                      />
+                      {errors.stock && (
+                        <div className="mt-2 text-red-600 text-sm flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {Array.isArray(errors.stock) ? errors.stock[0] : errors.stock}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Category</label>
+                    <div className="relative">
+                      <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-4l-3 4 3 4M9 7l-3 4 3 4" />
+                      </svg>
+                      <select
+                        name="category_id"
+                        value={formData.category_id}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 appearance-none"
+                        required
+                        disabled={loading}
+                      >
+                        <option value="">Select a category...</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                    {errors.category_id && (
+                      <div className="mt-2 text-red-600 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.category_id) ? errors.category_id[0] : errors.category_id}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Product Image</label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="image"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+                        disabled={loading}
+                      />
+                      <div className="mt-2 text-xs text-slate-500">
+                        Supported formats: JPG, PNG, GIF. Max size: 2MB
+                      </div>
+                    </div>
+                    {errors.image && (
+                      <div className="mt-2 text-red-600 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.image) ? errors.image[0] : errors.image}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-end space-x-4 pt-6 border-t border-slate-200/50">
+                    <button
+                      type="button"
+                      onClick={() => setModalOpen(false)}
+                      className="px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100 transition-all duration-200 font-medium"
+                      disabled={loading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2 font-medium"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{editProduct ? "Update Product" : "Create Product"}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
