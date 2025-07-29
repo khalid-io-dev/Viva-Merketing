@@ -1,7 +1,7 @@
 export default function Contact() {
     return (
-        <div className="flex flex-auto md:flex-col flex-grow justify-center items-center bg-white px-6 py-4 lg:px-8 box-border w-full pr-24 ">
-            <div className=" mx-auto max-w-7xl pl-0 w-full">
+        <div className="flex flex-col flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 box-border w-full">
+            <div className=" mx-auto max-w-7xl w-full">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
                         Contact Us
@@ -12,7 +12,7 @@ export default function Contact() {
                 </div>
 
                 <div className="ml-40 grid grid-cols-1 md:grid-cols-2 gap-16">
-
+                    {/* FORMULAIRE À GAUCHE */}
                     <form action="#" method="POST" className="space-y-8">
                         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
                             <div>

@@ -12,7 +12,7 @@
     import Layout from "../src/components/layout/index.tsx"
     import Profile from "./pages/public/account/profile";
     import DetailProduct from "./pages/public/products/detail";
-
+    import ProductsPage from "./pages/Admin/ProductsPage";
     function App() {
         return (
             <BrowserRouter>
@@ -27,6 +27,7 @@
                     <Route path="/registration" element={<Layout><Registrationform /></Layout>} />
                     <Route path="/profile" element={<Layout><Profile /></Layout>} />
                     <Route path="/detail" element={<Layout><DetailProduct /></Layout>} />
+                    <Route path="/admin/products" element={<ProductsPage />} />
                 </Routes>
             </BrowserRouter>
         );

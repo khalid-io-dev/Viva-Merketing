@@ -14,7 +14,6 @@ export default function Nav() {
             setTransparent(window.scrollY === 0);
         };
 
-
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -27,7 +26,7 @@ export default function Nav() {
             className={`fixed h-[80px] w-full z-10 top-0 start-0 uppercase font-sans transition-colors duration-500 ease-in-out pb-4 ${
                 isHomePage && transparent
                     ? "bg-transparent text-white"
-                    : "bg-white text-black"
+                    : "bg-white text-black "
             }`}
         >
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -74,13 +73,13 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/services" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            <a href="#services" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Services
-                            </Link>
+                            </a>
                         </li>
                         <li>
                             <Link to="/products" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                products
+                                Products
                             </Link>
                         </li>
                         <li>
@@ -89,13 +88,18 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                About
+                            <Link to="/login" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Log in
                             </Link>
                         </li>
                         <li>
-                            <Link to="/login" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                Log in
+                            <Link to="/detail" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Detail
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/about" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                About
                             </Link>
                         </li>
                         <li className="md:pl-10">
