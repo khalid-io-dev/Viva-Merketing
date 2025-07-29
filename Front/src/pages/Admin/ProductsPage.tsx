@@ -56,57 +56,51 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(false);
 
   // Make authenticated requests with proper headers
-  const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}) => {
-    const defaultHeaders: HeadersInit = {
-      'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-    };
-
-    // Add Authorization header if using token-based auth
-    const token = authService.getToken();
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-
-    // Don't add Content-Type for FormData - let browser set it
-    if (!(options.body instanceof FormData)) {
-      defaultHeaders['Content-Type'] = 'application/json';
-    }
-
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
-      credentials: 'include', // Important for CORS with cookies
-    };
-
-    console.log('🔍 Making request to:', url, 'with config:', config);
-    
-    const response = await fetch(url, config);
-    const text = await response.text();
-    
-    console.log('🔍 Response status:', response.status);
-    console.log('🔍 Response text:', text);
-
-    if (!response.ok) {
-      let errorMessage = `HTTP ${response.status}`;
-      try {
-        const errorData = JSON.parse(text);
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
-        errorMessage = text || errorMessage;
-      }
-      throw new Error(errorMessage);
-    }
-
+ const makeAuthenticatedRequest = async (url: string, options: RequestInitschm = {}) => {
     try {
-      return JSON.parse(text);
-    } catch {
-      return text;
+        const token = authService.getToken();
+        if (!token) {
+            throw new Error("No authentication token found");
+        }
+
+        const headers: HeadersInit = {
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            Authorization: `Bearer ${token}`,
+        };
+
+        if (!(options.body instanceof FormData)) {
+            headers["Content-Type"] = "application/json";
+        }
+
+        const config: RequestInit = {
+            ...options,
+            headers: { ...headers, ...options.headers },
+            credentials: "include", // Send cookies (e.g., Sanctum session)
+        };
+
+        console.log('🔍 Making request to:', url, 'with config:', config);
+        const response = await fetch(url, config);
+        const text = await response.text();
+        console.log('🔍 Response status:', response.status, 'Response text:', text);
+
+        if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}`;
+            try {
+                const errorData = JSON.parse(text);
+                errorMessage = errorData.message || errorData.error || errorMessage;
+            } catch {
+                errorMessage = text || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+
+        return JSON.parse(text);
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
     }
-  };
+};
 
   // Check admin access
   useEffect(() => {
@@ -120,48 +114,45 @@ export default function ProductsPage() {
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
-      try {
-        console.log("🔍 Fetching categories from:", `${API_URL}/categories`);
-        const data = await makeAuthenticatedRequest(`${API_URL}/categories`);
-        console.log("🔍 Categories response:", data);
-        setCategories(data);
-      } catch (error: any) {
-        console.error("Failed to fetch categories:", error);
-        setErrors({ general: error.message || "Failed to load categories" });
-      }
+        try {
+            console.log("🔍 Fetching categories from:", `${API_URL}/categories`);
+            const response = await fetch(`${API_URL}/categories`, {
+                headers: { Accept: "application/json" },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+            setErrors({ general: "Failed to load categories" });
+        }
     };
     fetchCategories();
-  }, []);
+}, []);
 
   // Fetch products
-  const fetchProducts = async (page: number = 1) => {
-    if (!authService.isAdmin()) return;
-    setLoading(true);
+  const fetchProducts = async () => {
     try {
-      const params = new URLSearchParams({ page: page.toString() });
-      if (search) params.append("search", search);
-      if (categoryFilter) params.append("category_id", categoryFilter);
-
-      console.log("🔍 Fetching products from:", `${API_URL}/admin/products?${params}`);
-      const data: PaginatedResponse = await makeAuthenticatedRequest(`${API_URL}/admin/products?${params}`);
-      console.log("🔍 Products response:", data);
-      
-      setProducts(data.data);
-      setTotalPages(data.last_page);
-      setCurrentPage(data.current_page);
-    } catch (error: any) {
-      console.error("Failed to fetch products:", error);
-      setErrors({ general: error.message || "Failed to fetch products" });
+        setLoading(true);
+        const data = await makeAuthenticatedRequest(`${API_URL}/admin/products?page=1`);
+        setProducts(data.data); // Adjust based on your pagination response
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setErrors({ general: "Failed to load products" });
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
-  useEffect(() => {
-    if (authService.isAdmin()) {
-      fetchProducts();
+useEffect(() => {
+    if (authService.isAuthenticated() && authService.isAdmin()) {
+        fetchProducts();
+    } else {
+        setErrors({ general: "Please log in as admin" });
     }
-  }, [currentPage, search, categoryFilter]);
+}, []);
 
   const handleAddEdit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -362,7 +353,7 @@ export default function ProductsPage() {
                     </td>
                     <td className="py-3 px-4 border-b font-medium">{product.name}</td>
                     <td className="py-3 px-4 border-b">{product.category.name}</td>
-                    <td className="py-3 px-4 border-b">${product.price.toFixed(2)}</td>
+                    <td className="py-3 px-4 border-b">${Number(product.price).toFixed(2)}</td>
                     <td className="py-3 px-4 border-b">{product.stock}</td>
                     <td className="py-3 px-4 border-b">
                       <button
