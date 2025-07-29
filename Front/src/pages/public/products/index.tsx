@@ -44,7 +44,7 @@ export default function ProductList() {
                     <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start">Our products</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9"> {/* gap réduit */}
                     {products.map((product) => (
-                        <Link to={`/product/${product.id}`} className="w-full">
+                        <Link to={`/product/${product.name}`} className="w-full">
                         <div
                             key={product.id}
                             className= "transition flex flex-col items-center border border-gray-200"

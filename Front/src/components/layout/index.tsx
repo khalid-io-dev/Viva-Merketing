@@ -3,8 +3,9 @@ import { Footer } from './footer';
 import Presentation from "../HomePage/presentation";
 import { useLocation } from 'react-router-dom';
 import PageTransition from "../pageTransition";
-import ScrollToTop from "../tools/scrollToTop";
-import ScrollToTopAuto from "../tools/ScrollToTopAuto"; // ← importe ceci
+import ScrollToTop from "../tools/animation/scrollToTop";
+import ScrollToTopAuto from "../tools/animation/ScrollToTopAuto";
+
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
@@ -15,7 +16,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ScrollToTopAuto />
             <Navbar />
             {isHomePage && <Presentation />}
-            <main className={isHomePage ? "flex flex-col flex-grow w-full" : "flex flex-col flex-grow pt-24 w-full"}>
+            <main className={isHomePage ? "flex flex-col flex-grow w-full h-full" : "flex flex-col flex-grow pt-24 w-full h-full"}>
                 <PageTransition>
                     {children}
                 </PageTransition>

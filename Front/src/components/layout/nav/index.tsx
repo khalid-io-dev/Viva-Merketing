@@ -14,6 +14,7 @@ export default function Nav() {
             setTransparent(window.scrollY === 0);
         };
 
+
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -26,7 +27,7 @@ export default function Nav() {
             className={`fixed h-[80px] w-full z-10 top-0 start-0 uppercase font-sans transition-colors duration-500 ease-in-out pb-4 ${
                 isHomePage && transparent
                     ? "bg-transparent text-white"
-                    : "bg-gray-50 text-black "
+                    : "bg-white text-black"
             }`}
         >
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -83,7 +84,7 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/login" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            <Link to="/contact" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Contact
                             </Link>
                         </li>

@@ -1,15 +1,11 @@
 import { Link } from "react-router-dom";
+import img from "../../../../../ressources/images/undraw_login_weas.svg"
 
 export default function LoginForm() {
     return (
-        <div className="flex flex-col flex-grow justify-center items-center px-6 py-6 lg:px-8 box-border w-full">
-            <div className="sm:mx-auto sm:w-full">
-                <h1 className="text-center text-5xl md:text-2xl font-bold tracking-tight text-gray-900">
-                    Sign in to your account
-                </h1>
-            </div>
-
-            <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl">
+        <div className="grid-rows-1 lg:grid grid-cols-2 gap-6 px-6 lg:px-8 h-full w-full py-12">
+            <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl pl-52  items-center">
+                <div className="pb-10"><h1 className="text-4xl text-black font-mono">Sign up Here !</h1></div>
                 <form action="#" method="POST" className="space-y-6 w-full">
                     <div>
                         <label htmlFor="email" className="block text-2xl md:text-sm font-medium text-gray-900">
@@ -52,10 +48,10 @@ export default function LoginForm() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className="flex items-center">
                         <button
                             type="submit"
-                            className="block w-full rounded-md bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+                            className="block rounded-md w-40 bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
                         >
                             Sign in
                         </button>
@@ -69,6 +65,11 @@ export default function LoginForm() {
                     </Link>
                 </p>
             </div>
+            <img
+                src={img}
+                className="w-full h-full"
+                alt={"orga partner"}
+            />
         </div>
     );
 }
