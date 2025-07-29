@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Routing\Controller; // Explicitly import
 
 class CategoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
         $this->middleware('role:admin')->only(['store', 'update', 'destroy']);
     }
 
     public function index()
     {
+        \Log::info('Fetching categories');
         $categories = Category::withCount('products')->get();
         return response()->json($categories);
     }

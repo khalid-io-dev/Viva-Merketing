@@ -10,13 +10,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    protected $fillable = ['name', 'email', 'phone', 'password', 'image', 'role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'image']; 
 
     public function roles()
-{
-    return $this->belongsToMany(Role::class);
-}
-
+    {
+        return $this->belongsToMany(Role::class);
+    }
 
     public function cart()
     {
@@ -28,4 +27,3 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 }
-
