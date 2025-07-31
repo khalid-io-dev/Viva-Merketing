@@ -1,6 +1,6 @@
-import imga from "../../../../../product.webp";
-import imga2 from "../../../../../ressources/images/product2.webp"
-import imga3 from "../../../../../ressources/images/product3.webp"
+import imga from "../../../product.webp";
+import imga2 from "../../../ressources/images/product2.webp"
+import imga3 from "../../../ressources/images/product3.webp"
 import {useState} from "react";
 
 export default function DetailProduct() {

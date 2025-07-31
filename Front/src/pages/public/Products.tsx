@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import SortMenu from "../../../components/Product/SortMenu";
+import SortMenu from "../../components/Product/SortMenu";
 
 interface Product {
     id: number;
