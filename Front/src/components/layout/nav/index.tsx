@@ -19,7 +19,7 @@ export default function Nav() {
     const handleLogout = async (e: React.FormEvent) => {
         try {
             console.log("Log out successful:", await authService.logout());
-            navigate("/");
+            navigate("/login");
         } catch (err: any) {
             try {
                 const errorData = JSON.parse(err.message);
