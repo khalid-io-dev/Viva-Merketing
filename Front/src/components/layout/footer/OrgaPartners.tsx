@@ -1,8 +1,8 @@
-import orga1 from '../../../../../ressources/images/footer/img.png'
-import orga2 from '../../../../../ressources/images/footer/img_2.png'
-import orga3 from '../../../../../ressources/images/footer/img_3.png'
-import orga4 from '../../../../../ressources/images/footer/img_4.png'
-import orga5 from '../../../../../ressources/images/footer/img_5.png'
+import orga1 from '../../../../ressources/images/footer/img.png'
+import orga2 from '../../../../ressources/images/footer/img_2.png'
+import orga3 from '../../../../ressources/images/footer/img_3.png'
+import orga4 from '../../../../ressources/images/footer/img_4.png'
+import orga5 from '../../../../ressources/images/footer/img_5.png'
 
 
 export default function OrgaPartner(){

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import SocialMedia from "./socialMedias";
-import OrgaPartner from "./OrgaPartners";
+import SocialMedia from "./SocialMedias.tsx";
+import OrgaPartner from "./OrgaPartners.tsx";
 
 export function Footer() {
     return (

@@ -4,7 +4,7 @@ import Organisations from "../../components/HomePage/organisations";
 import Label from "../../components/HomePage/label";
 import ArganQuality from "../../components/HomePage/ArganQuality";
 import AboutHomePage from "../../components/HomePage/AboutHomePage";
-import ProductsAds from "../../components/Product/productsAds";
+import ProductsAds from "../../components/Product/ProductAdsComponent.tsx";
 
 export default function Home() {
     return (

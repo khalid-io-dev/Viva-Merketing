@@ -9,11 +9,10 @@ import Registrationform from "./pages/public/Registration.tsx";
 import Blogs from "./pages/public/Blogs.tsx";
 import '../ressources/css/app.css';
 import 'flowbite';
-import Layout from "../src/components/layout/index.tsx"
+import Layout from "./components/layout/Layout.tsx"
 import Profile from "./pages/public/Profile.tsx";
 import DetailProduct from "./pages/public/DetailProduct.tsx";
-import ProductsPage from "./pages/Admin/ProductsPage";
-import GuardRoutes from "./components/GuardRoutes.tsx";
+import ProductsManagementPage from "./pages/Admin/ProductsManagementPage.tsx";
 function App() {
     return (
         <BrowserRouter>
@@ -35,8 +34,8 @@ function App() {
                     </Layout>
                 } />
                 <Route path="/profile" element={<Layout><Profile /></Layout>} />
-                <Route path="/detail" element={<Layout><DetailProduct /></Layout>} />
-                <Route path="/admin/products" element={<Layout><ProductsPage /></Layout>} />
+                <Route path="/products/:id" element={<Layout><DetailProduct /></Layout>} />
+                <Route path="/admin/products" element={<Layout><ProductsManagementPage /></Layout>} />
             </Routes>
         </BrowserRouter>
     );

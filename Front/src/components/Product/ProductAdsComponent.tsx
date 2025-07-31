@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import CountUp from "../../tools/animation/CountUp";
+import CountUp from "../tools/animation/CountUp";
 
 export default function ProductsAds(){
     const countup = <CountUp

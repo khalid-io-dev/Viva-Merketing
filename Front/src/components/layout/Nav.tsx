@@ -1,8 +1,8 @@
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import imga from "../ARGAnisme.webp";
-import imga2 from "../../../../favicon2.ico";
+import imga from "./ARGAnisme.webp";
+import imga2 from "../../../favicon2.ico";
 import { useEffect, useState } from "react";
-import {authService} from "../../../services/AuthService.tsx";
+import {authService} from "../../services/AuthService.tsx";
 
 
 export default function Nav() {
@@ -19,6 +19,7 @@ export default function Nav() {
     const handleLogout = async (e: React.FormEvent) => {
         try {
             console.log("Log out successful:", await authService.logout());
+            await authService.logout()
             navigate("/login");
         } catch (err: any) {
             try {

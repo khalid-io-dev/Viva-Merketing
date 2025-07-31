@@ -63,4 +63,10 @@ class CategoryController extends Controller
         $category->delete();
         return response()->json(['message' => 'Category deleted successfully']);
     }
+
+    public function sort($name)
+    {
+
+    }
+
 }

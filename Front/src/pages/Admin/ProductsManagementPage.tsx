@@ -35,7 +35,7 @@ interface PaginatedResponse {
 
 const API_URL = "http://localhost:8000/api";
 
-export default function ProductsPage() {
+export default function ProductsManagementPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -719,3 +719,4 @@ export default function ProductsPage() {
         </div>
     );
 }
+

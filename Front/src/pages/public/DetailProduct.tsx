@@ -1,21 +1,78 @@
 import imga from "../../../product.webp";
 import imga2 from "../../../ressources/images/product2.webp"
 import imga3 from "../../../ressources/images/product3.webp"
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {authService} from "../../services/AuthService.tsx";
+interface Product {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    image: string | null;
+    category_id: number;
+    category: { id: number; name: string };
+}
+
+const API_URL = "http://localhost:8000/api";
 
 export default function DetailProduct() {
+    const { id } = useParams();
+    const [product, setProduct] = useState<Product>()
+    const [errors, setErrors] = useState<Record<string, string | string[]>>({});
+    const [loading, setLoading] = useState(false);
+
+    const makeAuthenticatedRequest = async (url: string) => {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            console.log('🔍 Response status:', response.status, 'Response text:', text);
+
+            if (!response.ok) {
+                let errorMessage = `HTTP ${response.status}`;
+                try {
+                    const errorData = JSON.parse(text);
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch {
+                    errorMessage = text || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+
+            return JSON.parse(text);
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    };
+    const fetchProduct = async() => {
+        try{
+            setLoading(true);
+            const data = await makeAuthenticatedRequest(`${API_URL}/products/${id}`);
+            setProduct(data);
+        } catch (error){
+            console.log("failed to fetch the product: ", error);
+            setErrors({general: "Failed to load product"})
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchProduct()
+        console.log(product)
+    }, []);
+
+
+
+    // à faire plus tard quand tout sera fonctionnel
     const [hover, setHover] = useState(imga)
     let imgs = [imga, imga2, imga3];
 
     const handleClick = (image: string) => {
         setHover(image)
     }
-    const category = 'Soap';
-    const price = '29.99€'
-    const productName = 'Morrocan Black Soap'
-    const description = "Immerse yourself in a unique skincare experience with our hydrating face cream, made with 98% natural-origin ingredients. Infused with organic aloe vera," +
-        " hyaluronic acid, and jojoba oil, it deeply moisturizes, soothes, and restores your skin’s natural radiance from the very first use."
-
 
     return (
         <div className="flex justify-center items-center bg-gray-50 py-8 px-4 lg:px-8 w-full">
@@ -47,24 +104,44 @@ export default function DetailProduct() {
                     </div>
                 </div>
 
+                {errors.name && (
+                    <div className="mt-2 text-red-600 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.name) ? errors.name[0] : errors.name}
+                    </div>
+                )}
+
+                {loading && (
+                    <div className="p-8 text-center">
+                        <div className="inline-flex items-center space-x-3">
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                            <span className="text-slate-600 font-medium">Loading informations...</span>
+                        </div>
+                    </div>
+                )}
+
                 {/* Bloc Informations */}
+                { product && (
                 <div id="informations"
                      className="flex flex-col  p-4 md:p-6 text-gray-500 ">
                     {/* Contenu des infos produit ici */}
-                    <h1 className="items-start text-2xl  md:text-xl">{category}</h1>
-                    <h1 className="text-4xl  md:text-2xl  mb-4 jus font-bold text-black">{productName}</h1>
-                    <p className="text-2xl md:text-lg text-gray-600 mb-2">Price : <strong>{price}</strong></p>
-                    <p className=" text-2xl md:text-sm text-gray-500 ">{description}</p>
+                    <h1 className="items-start text-2xl  md:text-xl">{product.category.name}</h1>
+                    <h1 className="text-4xl  md:text-2xl  mb-4 jus font-bold text-black">{product.name}</h1>
+                    <p className="text-2xl md:text-lg text-gray-600 mb-2">Price : <strong>{product.price}</strong></p>
+                    <p className=" text-2xl md:text-sm text-gray-500 ">{product.description}</p>
                     <div id="DPButtons" className="flex flex-row p-4 gap-4 w-fit items-start">
-                        <button className="bg-black text-white px-4 py-2  border-gray-300 rounded-none font-medium shadow hover:bg-gray-800 transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
+                        <button disabled={loading} className="bg-black text-white px-4 py-2  border-gray-300 rounded-none font-medium shadow hover:bg-gray-800 transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
                             Add to Cart
                         </button>
-                        <button className="bg-white text-black border border-gray-300 px-4 py-2 rounded-none font-medium shadow hover:bg-black hover:text-white transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
+                        <button disabled={loading} className="bg-white text-black border border-gray-300 px-4 py-2 rounded-none font-medium shadow hover:bg-black hover:text-white transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
                             Checkout
                         </button>
                     </div>
 
-                </div>
+                </div>)
+                }
             </div>
         </div>
     )
