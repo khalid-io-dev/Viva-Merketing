@@ -1,6 +1,11 @@
 *.log
 .DS_Store
 .env
+vendor
+composer.json
+composer.lock
+package.json
+package-lock.json
 .env.backup
 .env.production
 .phpactor.json
