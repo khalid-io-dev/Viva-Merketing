@@ -26,12 +26,12 @@ function App() {
                 <Route path="/cart" element={<Layout><Cart /></Layout>} />
                 <Route path="/login" element={
                     <Layout>
-                        <GuardRoutes children={<LoginForm />} requireConnection={false}/>
+                        <LoginForm />
                     </Layout>
                 } />
                 <Route path="/registration" element={
                     <Layout>
-                        <GuardRoutes children={<Registrationform />} requireConnection={false}/>
+                        <Registrationform />
                     </Layout>
                 } />
                 <Route path="/profile" element={<Layout><Profile /></Layout>} />

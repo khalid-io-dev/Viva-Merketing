@@ -27,11 +27,11 @@ interface FormData {
     category_id: string;
 }
 
-/*interface PaginatedResponse {
+interface PaginatedResponse {
     data: Product[];
     current_page: number;
     last_page: number;
-}*/
+}
 
 const API_URL = "http://localhost:8000/api";
 
