@@ -13,6 +13,7 @@ import Layout from "../src/components/layout/index.tsx"
 import Profile from "./pages/public/Profile.tsx";
 import DetailProduct from "./pages/public/DetailProduct.tsx";
 import ProductsPage from "./pages/Admin/ProductsPage";
+import GuardRoutes from "./components/GuardRoutes.tsx";
 function App() {
     return (
         <BrowserRouter>
@@ -23,8 +24,16 @@ function App() {
                 <Route path="/contact" element={<Layout><Contact /></Layout>} />
                 <Route path="/blogs" element={<Layout><Blogs /></Layout>} />
                 <Route path="/cart" element={<Layout><Cart /></Layout>} />
-                <Route path="/login" element={<Layout><LoginForm /></Layout>} />
-                <Route path="/registration" element={<Layout><Registrationform /></Layout>} />
+                <Route path="/login" element={
+                    <Layout>
+                        <GuardRoutes children={<LoginForm />} requireConnection={false}/>
+                    </Layout>
+                } />
+                <Route path="/registration" element={
+                    <Layout>
+                        <GuardRoutes children={<Registrationform />} requireConnection={false}/>
+                    </Layout>
+                } />
                 <Route path="/profile" element={<Layout><Profile /></Layout>} />
                 <Route path="/detail" element={<Layout><DetailProduct /></Layout>} />
                 <Route path="/admin/products" element={<Layout><ProductsPage /></Layout>} />

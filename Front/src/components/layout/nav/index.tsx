@@ -1,13 +1,38 @@
-import { Link, useLocation } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import imga from "../ARGAnisme.webp";
 import imga2 from "../../../../favicon2.ico";
 import { useEffect, useState } from "react";
+import {authService} from "../../../services/AuthService.tsx";
+
 
 export default function Nav() {
+    const connected = authService.isAuthenticated();
+    const admin = authService.isAdmin();
     const location = useLocation();
     const isHomePage = location.pathname === '/';
-
+    const navigate = useNavigate();
     const [transparent, setTransparent] = useState(true);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(false);
+    const [update, setUpdate] = useState(false);
+
+    const handleLogout = async (e: React.FormEvent) => {
+        try {
+            console.log("Log out successful:", await authService.logout());
+            navigate("/");
+        } catch (err: any) {
+            try {
+                const errorData = JSON.parse(err.message);
+                setErrors(errorData);
+            } catch {
+                setErrors({ general: err.message || "Logout failed." });
+            }
+            console.error("Logout error:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -84,20 +109,41 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/contact" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                Contact
-                            </Link>
-                        </li>
-                        <li>
                             <Link to="/about" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 About
                             </Link>
                         </li>
                         <li>
-                            <Link to="/login" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                Log in
+                            <Link to="/contact" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Contact
                             </Link>
                         </li>
+
+                        {admin ? <li>
+                            <Link to="/admin/products" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Admin
+                            </Link>
+                        </li> : null
+                        }
+                        { connected ?
+                            <li>
+                            <Link to="/" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Profile
+                            </Link>
+                        </li>
+                         :
+                            <li>
+                                <Link to="/login" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                    Log in
+                                </Link>
+                            </li>
+                        }
+                        {connected ?
+                            <li>
+                                <button onClick={handleLogout} className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                    LOGOUT
+                                </button>
+                            </li> : null}
                         <li className="md:pl-10">
                             <Link to="/cart" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Cart (0)
