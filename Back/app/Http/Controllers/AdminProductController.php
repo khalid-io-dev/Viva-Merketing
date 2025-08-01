@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Role;
@@ -48,16 +49,24 @@ class AdminProductController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
                 'category_id' => 'required|exists:categories,id',
             ]);
+
 
             if ($request->hasFile('image')) {
                 $validated['image'] = $request->file('image')->store('product_images', 'public');
                 \Log::info('Image stored', ['path' => $validated['image']]);
             }
 
-            $product = Product::create($validated);
+            $product = Product::create(['name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'category_id' => $validated['category_id']]);
+
+            $product->imageItems()->create(['name'=> $validated['image']]);
+
             \Log::info('Product created', ['id' => $product->id]);
             return response()->json($product, 201);
         } catch (\Exception $e) {
@@ -122,6 +131,20 @@ class AdminProductController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
             return response()->json(['error' => 'Failed to delete product'], 500);
+        }
+    }
+
+    public function imageDisplay($id){
+        try {
+            $images = Image::where('product_id', $id)->get();
+            \Log::info('Image displayed', ['id' => $id]);
+            return response()->json($images);
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete product', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json(['error' => 'Failed to display image'], 500);
         }
     }
 }

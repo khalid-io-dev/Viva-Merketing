@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('admin')->prefix('admin')->group(function () {  // Changed from 'role:admin'
             Route::get('/products', [AdminProductController::class, 'index']);
             Route::post('/products', [AdminProductController::class, 'store']);
+            Route::post('/products/image/{id}', [AdminProductController::class, 'imageDisplay']);
             Route::put('/products/{id}', [AdminProductController::class, 'update']);
             Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
         });
