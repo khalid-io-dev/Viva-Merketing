@@ -95,14 +95,15 @@ class AdminProductController extends Controller
 
             if ($request->hasFile('image')) {
                 if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
-                    Log::info('Old image deleted', ['path' => $product->image]);
+                    Storage::disk('public')->delete($product->image->name);
+                    Log::info('Old image deleted', ['path' => $product->image->name]);
                 }
                 $validated['image'] = $request->file('image')->store('product_images', 'public');
                 Log::info('New image stored', ['path' => $validated['image']]);
             }
 
             $product->update($validated);
+            $product->image()->update(['name'=> $validated['image']]);
             Log::info('Product updated', ['id' => $product->id]);
             return response()->json($product);
         } catch (\Exception $e) {
