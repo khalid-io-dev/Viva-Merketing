@@ -29,4 +29,16 @@ class ProductController extends Controller
         $product = Product::with('category')->findOrFail($id);
         return response()->json($product);
     }
+
+
+    /**
+     * @param $category
+     * @return \Illuminate\Http\JsonResponse
+     * This method sort the products by category
+     */
+    public function sortByCategory($id){
+        $products = Product::where('category_id', $id)->get();
+        return response()->json($products);
+    }
+
 }

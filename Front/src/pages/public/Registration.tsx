@@ -50,7 +50,7 @@ export default function RegistrationForm() {
 
             const response = await authService.register(data);
             console.log("Registration successful:", response);
-            navigate("/login");
+            navigate("/");
         } catch (err: any) {
             console.error("Raw registration error:", err);
             try {

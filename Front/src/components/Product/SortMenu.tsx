@@ -2,18 +2,37 @@ import PriceSlider from "./PriceSlider.tsx";
 import {useEffect, useState} from "react";
 const API_URL = "http://localhost:8000/api";
 
+
+interface Product {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    image: string | null;
+    category_id: number;
+    category: { id: number; name: string };
+}
 interface Categorie {
     id: number;
     name: string;
 }
 
-export default function SortMenu(){
+interface Props {
+    SendToParentProducts : (SortedProducts : Product[]) => void;
+}
+
+export default function SortMenu({SendToParentProducts}: Props){
 
     const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState<Product[]>([])
     const [categories, setCategories] = useState<Categorie[]>([])
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
-    const [activeCategory, setActiveCategory] = useState(true);
+    const [activeCategorySection, setActiveCategorySection] = useState(true);
     const [activeFilter, setActiveFilter] = useState(true);
+    const [selectedCategory, setSelectedCategory] = useState<number>();
+
+    {/* do a request and returns the results (without being authentificated) */}
 
     const makeAuthenticatedRequest = async (url: string) => {
         try {
@@ -40,6 +59,21 @@ export default function SortMenu(){
         }
     };
 
+    {/* function that fetchs the products sorted by category */}
+
+    const fetchSortedProductsByCategory = async () => {
+        try {
+            const data = await makeAuthenticatedRequest(`${API_URL}/products/category/` + selectedCategory);
+            SendToParentProducts(data);
+            setProducts(data)
+
+        } catch (error) {
+            console.error("Failed to fetch sorted products by category:", error);
+            setErrors({ general: "Failed to load sorted products by category " });
+        }
+    };
+
+    {/* function that fetchs all the categories */}
     const fetchCategories = async () => {
         try {
             setLoading(true);
@@ -53,11 +87,13 @@ export default function SortMenu(){
         }
     };
 
+    {/* Loading categories */}
+
     useEffect(() => {
         fetchCategories();
     }, []);
 
-
+    {/* SVGs */}
 
     const down = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"
                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -70,24 +106,29 @@ export default function SortMenu(){
         <polyline points="6 16 12 10 18 16" />
     </svg>
 
+    const CatCurrentSVG = activeCategorySection ? down : up;
 
-    const CatCurrentSVG = activeCategory ? down : up;
 
     const handleClickCategory = () => {
-        if (activeCategory) setActiveCategory(false);
-        else setActiveCategory(true);
+        if (activeCategorySection) setActiveCategorySection(false);
+        else setActiveCategorySection(true);
     }
     const handleClickFilter = () => {
         if (activeFilter) setActiveFilter(false);
         else setActiveFilter(true);
     }
 
+    const handleSortClick = () => {
+        fetchSortedProductsByCategory()
+    }
+
+
     return (
         <div className="flex flex-col  text-black ">
             <div className="border border-collapse">
                 <h1 className="hidden md:block max-w-7xl mx-auto text-center text-2xl ">Filters</h1>
             </div>
-            <button disabled={loading}
+            <button
                 onClick={() => {handleClickFilter()}}
                 className="block md:hidden max-w-7xl mx-auto text-center text-2xl"
             >
@@ -99,7 +140,7 @@ export default function SortMenu(){
             <div className="p-2 border border-collapse">
                 <div className="flex items-center gap-2 p-3 border border-collapse">
                     <h1 className="text-start">Price</h1>
-                    <button>
+                    <button disabled={loading}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          className="bi bi-arrow-down" viewBox="0 0 16 16">
                         <path fillRule="evenodd"
@@ -125,7 +166,6 @@ export default function SortMenu(){
                 <div className="flex items-center gap-2 p-3 border border-collapse">
                     <h1 className="text-start">Category</h1>
                     <button
-                        disabled={loading}
                         type="button"
                         className="text-start"
                         onClick={() => {handleClickCategory()}}
@@ -151,15 +191,17 @@ export default function SortMenu(){
                         </div>
                     </div>
                 )}
-                {categories && (
-                <div className={activeCategory ? "text-black pl-5 " : "hidden text-black pl-5 "}>
+                {categories && !loading && (
+                <div className={activeCategorySection ? "text-black pl-5 " : "hidden text-black pl-5 "}>
                 {
                     categories.map((cat) => {
                         return (
                             <div key={cat.id}>
                                     <div className="grid grid-cols-2 p-2 ">
                                         <label className="text-sm">{cat.name}</label>
-                                        <input className="border border-black lg:max-w-24 max-h-5" type="radio" name="selectedCategory"/>
+                                        <input onChange={() => {
+                                            setSelectedCategory(cat.id)
+                                        }} disabled={loading} className="border border-black lg:max-w-24 max-h-5" type="radio" name="selectedCategory"/>
                                     </div>
                                 </div>
                         );
@@ -169,7 +211,7 @@ export default function SortMenu(){
                 )}
             </div>
                 <div className="flex justify-center pt-8">
-                    <button disabled={loading} className="bg-emerald-600 border border-emerald-900 justify-center w-24 rounded hover:bg-emerald-700" type="button">Sort</button>
+                    <button disabled={loading} onClick={handleSortClick} className="bg-emerald-600 border disabled:bg-gray-700  justify-center w-24 rounded hover:bg-emerald-700" type="button">Sort</button>
                 </div>
             </form>
             </div>
