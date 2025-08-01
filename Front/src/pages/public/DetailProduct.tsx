@@ -10,7 +10,7 @@ interface Product {
     description: string;
     price: number;
     stock: number;
-    image: string | null;
+    image: { id: number; name: string; } [];
     category_id: number;
     category: { id: number; name: string };
 }
@@ -46,7 +46,7 @@ export default function DetailProduct() {
             throw error;
         }
     };
-    const fetchProduct = async() => {
+    const fetchSingleProduct = async() => {
         try{
             setLoading(true);
             const data = await makeAuthenticatedRequest(`${API_URL}/products/${id}`);
@@ -60,7 +60,7 @@ export default function DetailProduct() {
     }
 
     useEffect(() => {
-        fetchProduct()
+        fetchSingleProduct()
         console.log(product)
     }, []);
 
@@ -97,7 +97,7 @@ export default function DetailProduct() {
                     {/* Image principale */}
                     <div id="bigImage" className="flex items-center justify-center border rounded shadow-md bg-white p-4">
                         <img
-                            src={hover}
+                            src={"http://localhost:8000/storage/" + product?.image['name']}
                             className="w-10/12 md:w-[400px] h-full md:h-[400px] md:object-contain "
                             alt="Produit principal"
                         />

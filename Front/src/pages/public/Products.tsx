@@ -9,7 +9,7 @@ interface Product {
     description: string;
     price: number;
     stock: number;
-    image: string | null;
+    image: {id: number; name: string;}[];
     category_id: number;
     category: { id: number; name: string };
 }
@@ -128,11 +128,16 @@ export default function ProductList() {
                                         key={product.id}
                                         className="transition duration-200 transform hover:scale-[1.02] hover:shadow-lg border border-gray-200 rounded-md overflow-hidden flex flex-col bg-white"
                                     >
-                                        <img
-                                            src="product.webp"
-                                            alt={product.name}
-                                            className="w-full h-64 object-cover"
-                                        />
+                                        {/* Affiche l'image si elle existe */}
+                                        {product.image?.name && (
+                                            <img
+                                                src={`http://localhost:8000/storage/${product.image.name}`}
+                                                alt={product.name}
+                                                className="w-full h-64 object-cover"
+                                            />
+                                        )}
+
+                                        {/* Informations produit */}
                                         <div className="flex justify-between px-4 py-3">
                                             <h2 className="text-gray-700 font-medium">{product.name}</h2>
                                             <p className="text-gray-600 font-semibold">{product.price}€</p>
@@ -142,6 +147,7 @@ export default function ProductList() {
                             </div>
                         </>
                     )}
+
                 </div>
             </div>
         </div>

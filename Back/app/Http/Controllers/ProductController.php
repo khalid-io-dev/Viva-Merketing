@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         \Log::info('Fetching public products', ['params' => $request->all()]);
-        $query = Product::with('category');
+        $query = Product::with('category', 'image');
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
@@ -26,7 +26,7 @@ class ProductController extends Controller
     public function show($id)
     {
         \Log::info('Fetching product', ['id' => $id]);
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with('category', 'image')->findOrFail($id);
         return response()->json($product);
     }
 
@@ -37,7 +37,7 @@ class ProductController extends Controller
      * This method sort the products by category
      */
     public function sortByCategory($id){
-        $products = Product::where('category_id', $id)->get();
+        $products = Product::where('category_id', $id)->with('category', 'image')->get();
         return response()->json($products);
     }
 
