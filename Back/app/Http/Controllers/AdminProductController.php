@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
@@ -19,9 +20,9 @@ class AdminProductController extends Controller
 
     public function index(Request $request)
     {
-        \Log::info('Fetching admin products', ['params' => $request->all()]);
+        Log::info('Fetching admin products', ['params' => $request->all()]);
         try {
-            $query = Product::with('category');
+            $query = Product::with('category', 'image');
             if ($request->has('category_id')) {
                 $query->where('category_id', $request->category_id);
             }
@@ -32,7 +33,7 @@ class AdminProductController extends Controller
             $products = $query->paginate(20);
             return response()->json($products);
         } catch (\Exception $e) {
-            \Log::error('Failed to fetch products', [
+            Log::error('Failed to fetch products', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -42,7 +43,7 @@ class AdminProductController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('Store product request', ['input' => $request->all(), 'files' => $request->hasFile('image')]);
+        Log::info('Store product request', ['input' => $request->all(), 'files' => $request->hasFile('image')]);
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
@@ -56,7 +57,7 @@ class AdminProductController extends Controller
 
             if ($request->hasFile('image')) {
                 $validated['image'] = $request->file('image')->store('product_images', 'public');
-                \Log::info('Image stored', ['path' => $validated['image']]);
+                Log::info('Image stored', ['path' => $validated['image']]);
             }
 
             $product = Product::create(['name' => $validated['name'],
@@ -65,12 +66,12 @@ class AdminProductController extends Controller
             'stock' => $validated['stock'],
             'category_id' => $validated['category_id']]);
 
-            $product->imageItems()->create(['name'=> $validated['image']]);
+            $product->image()->create(['name'=> $validated['image']]);
 
-            \Log::info('Product created', ['id' => $product->id]);
+            Log::info('Product created', ['id' => $product->id]);
             return response()->json($product, 201);
         } catch (\Exception $e) {
-            \Log::error('Failed to store product', [
+            Log::error('Failed to store product', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -80,7 +81,7 @@ class AdminProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        \Log::info('Update product request', ['id' => $id, 'input' => $request->all()]);
+        Log::info('Update product request', ['id' => $id, 'input' => $request->all()]);
         try {
             $product = Product::findOrFail($id);
             $validated = $request->validate([
@@ -95,17 +96,17 @@ class AdminProductController extends Controller
             if ($request->hasFile('image')) {
                 if ($product->image) {
                     Storage::disk('public')->delete($product->image);
-                    \Log::info('Old image deleted', ['path' => $product->image]);
+                    Log::info('Old image deleted', ['path' => $product->image]);
                 }
                 $validated['image'] = $request->file('image')->store('product_images', 'public');
-                \Log::info('New image stored', ['path' => $validated['image']]);
+                Log::info('New image stored', ['path' => $validated['image']]);
             }
 
             $product->update($validated);
-            \Log::info('Product updated', ['id' => $product->id]);
+            Log::info('Product updated', ['id' => $product->id]);
             return response()->json($product);
         } catch (\Exception $e) {
-            \Log::error('Failed to update product', [
+            Log::error('Failed to update product', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -115,18 +116,19 @@ class AdminProductController extends Controller
 
     public function destroy($id)
     {
-        \Log::info('Delete product request', ['id' => $id]);
+        Log::info('Delete product request', ['id' => $id]);
         try {
             $product = Product::findOrFail($id);
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-                \Log::info('Image deleted', ['path' => $product->image]);
+                $path = $product->image;
+                Storage::disk('public')->delete($product->image->name);
+                Log::info('Image deleted', ['path' => $product->image]);
             }
             $product->delete();
-            \Log::info('Product deleted', ['id' => $id]);
+            Log::info('Product deleted', ['id' => $id]);
             return response()->json(['message' => 'Product deleted successfully']);
         } catch (\Exception $e) {
-            \Log::error('Failed to delete product', [
+            Log::error('Failed to delete product', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -137,10 +139,10 @@ class AdminProductController extends Controller
     public function imageDisplay($id){
         try {
             $images = Image::where('product_id', $id)->get();
-            \Log::info('Image displayed', ['id' => $id]);
+            Log::info('Image displayed', ['id' => $id]);
             return response()->json($images);
         } catch (\Exception $e) {
-            \Log::error('Failed to delete product', [
+            Log::error('Failed to delete product', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

@@ -7,7 +7,7 @@ interface Product {
     description: string;
     price: number;
     stock: number;
-    image: string | null;
+    image: { id: number; name: string }[];
     category_id: number;
     category: { id: number; name: string };
 }
@@ -396,9 +396,9 @@ export default function ProductsManagementPage() {
                                         <tr key={product.id} className="hover:bg-blue-50/50 transition-colors duration-150">
                                             <td className="py-4 px-6">
                                                 <div className="relative">
-                                                    {product.image ? (
+                                                    {product.image ?  (
                                                         <img
-                                                            src={`http://localhost:8000/storage/${product.image}`}
+                                                            src={"http://localhost:8000/storage/" + product.image['name']}
                                                             alt={product.name}
                                                             className="w-16 h-16 object-cover rounded-xl shadow-md ring-2 ring-white"
                                                         />

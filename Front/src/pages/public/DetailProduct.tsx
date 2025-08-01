@@ -130,7 +130,9 @@ export default function DetailProduct() {
                     <h1 className="items-start text-2xl  md:text-xl">{product.category.name}</h1>
                     <h1 className="text-4xl  md:text-2xl  mb-4 jus font-bold text-black">{product.name}</h1>
                     <p className="text-2xl md:text-lg text-gray-600 mb-2">Price : <strong>{product.price}</strong></p>
-                    <p className=" text-2xl md:text-sm text-gray-500 ">{product.description}</p>
+                    <div className="">
+                        <p className=" text-4xl md:text-sm text-gray-500 whitespace-pre-line">{product.description}</p>
+                    </div>
                     <div id="DPButtons" className="flex flex-row p-4 gap-4 w-fit items-start">
                         <button disabled={loading} className="bg-black text-white px-4 py-2  border-gray-300 rounded-none font-medium shadow hover:bg-gray-800 transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
                             Add to Cart
