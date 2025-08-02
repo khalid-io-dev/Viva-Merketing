@@ -95,12 +95,14 @@ export default function DetailProduct() {
                     </div>
 
                     {/* Image principale */}
-                    <div id="bigImage" className="flex items-center justify-center border rounded shadow-md bg-white p-4">
+                    <div  id="bigImage" className="flex items-center justify-center border rounded shadow-md bg-white p-4 items-center">
                         <img
-                            src={"http://localhost:8000/storage/" + product?.image['name']}
+                            src={"http://localhost:8000/storage/" + product?.image.name}
                             className="w-10/12 md:w-[400px] h-full md:h-[400px] md:object-contain "
                             alt="Produit principal"
+                            aria-disabled={loading}
                         />
+
                     </div>
                 </div>
 
