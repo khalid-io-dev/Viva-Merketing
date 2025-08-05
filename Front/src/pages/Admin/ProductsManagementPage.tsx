@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { authService } from "../../services/AuthService";
+import {makeAuthenticatedRequest, API_URL} from "../../services/Requests.tsx";
 
 interface Product {
     id: number;
@@ -33,7 +34,6 @@ interface PaginatedResponse {
     last_page: number;
 }
 
-const API_URL = "http://localhost:8000/api";
 
 export default function ProductsManagementPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -54,53 +54,6 @@ export default function ProductsManagementPage() {
     });
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
     const [loading, setLoading] = useState(false);
-
-    // Make authenticated requests with proper headers
-    const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}) => {
-        try {
-            const token = authService.getToken();
-            if (!token) {
-                throw new Error("No authentication token found");
-            }
-
-            const headers: HeadersInit = {
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-                Authorization: `Bearer ${token}`,
-            };
-
-            if (!(options.body instanceof FormData)) {
-                headers["Content-Type"] = "application/json";
-            }
-
-            const config: RequestInit = {
-                ...options,
-                headers: { ...headers, ...options.headers },
-                credentials: "include", // Send cookies (e.g., Sanctum session)
-            };
-
-            console.log('🔍 Making request to:', url, 'with config:', config);
-            const response = await fetch(url, config);
-            const text = await response.text();
-            console.log('🔍 Response status:', response.status, 'Response text:', text);
-
-            if (!response.ok) {
-                let errorMessage = `HTTP ${response.status}`;
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {
-                    errorMessage = text || errorMessage;
-                }
-                throw new Error(errorMessage);
-            }
-
-            return JSON.parse(text);
-        } catch (error) {
-            console.error('Fetch error:', error);
-            throw error;
-        }
-    };
 
     // Check admin access
     useEffect(() => {

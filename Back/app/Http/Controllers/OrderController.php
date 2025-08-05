@@ -20,9 +20,8 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $orders = $user->roles('admin')
-            ? Order::with(['user', 'items.product'])->get()
-            : $user->orders()->with(['items.product'])->get();
+        $orders = $user->orders()->with(['items.product'])->get();
+
         return response()->json($orders);
     }
 

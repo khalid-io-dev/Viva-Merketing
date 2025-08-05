@@ -12,7 +12,7 @@ class AdminOrderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api', 'role:admin']);
+        $this->middleware(['auth:api', 'admin']);
     }
 
     public function index(Request $request)
