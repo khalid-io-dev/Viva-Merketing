@@ -55,10 +55,10 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
         });
 
-        Route::get('/orders', [AdminOrderController::class, 'index']);
-        Route::get('/orders/{id}', [AdminOrderController::class, 'show']);
-        Route::put('/orders/{id}', [AdminOrderController::class, 'update']);
-        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy']);
+        Route::get('/admin/orders', [AdminOrderController::class, 'index']);
+        Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show']);
+        Route::put('/admin/orders/{id}', [AdminOrderController::class, 'update']);
+        Route::delete('/admin/orders/{id}', [AdminOrderController::class, 'destroy']);
     });
 
     // Admin category management routes
