@@ -1,5 +1,4 @@
 import {useState} from "react";
-
 export interface User {
   id: number;
   name: string;
@@ -262,17 +261,17 @@ class AuthService {
     window.dispatchEvent(new Event('authChange'));
   }
 
-  hasRole(requiredRole: string): boolean {
+  roles(requiredRole: string): boolean {
     const user = this.getCurrentUser();
     return user?.roles.some(role => role.name === requiredRole) || false;
   }
 
   isAdmin(): boolean {
-    return this.hasRole('admin');
+    return this.roles('admin');
   }
 
   isCustomer(): boolean {
-    return this.hasRole('customer');
+    return this.roles('customer');
   }
 }
 

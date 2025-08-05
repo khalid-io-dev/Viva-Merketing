@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
            ]);
 
            $user = Auth::user();
-           
+
            if (!$user) {
                \Log::warning('AdminMiddleware: No authenticated user');
                return response()->json(['error' => 'Unauthorized: Authentication required'], 401)
