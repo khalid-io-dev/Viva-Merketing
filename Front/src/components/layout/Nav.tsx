@@ -14,25 +14,6 @@ export default function Nav() {
     const [transparent, setTransparent] = useState(true);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const [update, setUpdate] = useState(false);
-
-    const handleLogout = async (e: React.FormEvent) => {
-        try {
-            console.log("Log out successful:", await authService.logout());
-            await authService.logout()
-            navigate("/login");
-        } catch (err: any) {
-            try {
-                const errorData = JSON.parse(err.message);
-                setErrors(errorData);
-            } catch {
-                setErrors({ general: err.message || "Logout failed." });
-            }
-            console.error("Logout error:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
 
     useEffect(() => {
@@ -120,15 +101,9 @@ export default function Nav() {
                             </Link>
                         </li>
 
-                        {admin ? <li>
-                            <Link to="/admin/products" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                Admin
-                            </Link>
-                        </li> : null
-                        }
                         { connected ?
                             <li>
-                            <Link to="/" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            <Link to="/profile" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Profile
                             </Link>
                         </li>
@@ -139,12 +114,6 @@ export default function Nav() {
                                 </Link>
                             </li>
                         }
-                        {connected ?
-                            <li>
-                                <button onClick={handleLogout} className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
-                                    LOGOUT
-                                </button>
-                            </li> : null}
                         <li className="md:pl-10">
                             <Link to="/cart" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Cart (0)

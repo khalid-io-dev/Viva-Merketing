@@ -1,6 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
 import img from "../../../ressources/images/undraw_login_weas.svg"
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {authService} from "../../services/AuthService.tsx";
 
 export default function LoginForm() {
@@ -12,12 +12,25 @@ export default function LoginForm() {
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
+    const [logged, setLogged] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setErrors({ ...errors, [e.target.name]: "" });
     };
+
+    useEffect(() => {
+        if (authService.isAuthenticated()) {
+            setLogged(true)
+            setErrors({ general: "User already logged." });
+            setTimeout(() => {
+                navigate("/");
+                setLogged(false)
+                setErrors({});
+            }, 5000)
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,7 +43,7 @@ export default function LoginForm() {
                 password: formData.password,
             });
             console.log("Login successful:", response);
-            navigate(authService.isAdmin() ? "/admin/dashboard" : "/");
+            navigate("/");
         } catch (err: any) {
             try {
                 const errorData = JSON.parse(err.message);
@@ -49,10 +62,12 @@ export default function LoginForm() {
     return (
         <div className="grid-rows-1 lg:grid grid-cols-2 gap-6 px-6 lg:px-8 h-full w-full py-12">
             <div className="sm:mx-auto sm:w-full mt-6 w-full max-w-3xl pl-52  items-center">
-                <div className="pb-10"><h1 className="text-4xl text-black font-mono">Sign up Here !</h1></div>
                 {errors.general && (
                     <div className="mb-4 text-red-600 text-center">{errors.general}</div>
                 )}
+                <div hidden={logged}>
+                <div className="pb-10"><h1 className="text-4xl text-black font-mono">Sign up Here !</h1></div>
+
                 <form onSubmit={handleSubmit} method="POST" className="space-y-6 w-full">
                     <div>
                         <label htmlFor="email" className="block text-2xl md:text-sm font-medium text-gray-900">
@@ -82,11 +97,11 @@ export default function LoginForm() {
                             <label htmlFor="password" className="block text-2xl md:text-sm font-medium text-gray-900">
                                 Password
                             </label>
-                            <div className="text-sm">
+                            {/*<div className="text-sm">
                                 <a href="#" className="font-semibold text-2xl md:text-sm text-emerald-600 hover:text-emerald-500">
                                     Forgot password?
                                 </a>
-                            </div>
+                            </div>*/}
                         </div>
                         <div className="mt-2.5">
                             <input
@@ -117,18 +132,20 @@ export default function LoginForm() {
                         </button>
                     </div>
                 </form>
-
                 <p className="mt-10 text-center text-2xl md:text-sm text-gray-600">
                     Not a member?{" "}
                     <Link to="/registration" className="text-emerald-600 hover:text-emerald-700">
                         Click here to register!
                     </Link>
                 </p>
+                </div>
+
             </div>
             <img
                 src={img}
                 className="w-full h-full"
                 alt={"orga partner"}
+                hidden={logged}
             />
         </div>
     );

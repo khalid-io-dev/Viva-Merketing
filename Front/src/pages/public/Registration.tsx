@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/AuthService.tsx";
 
@@ -14,6 +14,7 @@ export default function RegistrationForm() {
     });
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
     const [loading, setLoading] = useState(false);
+    const [logged, setLogged] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +26,18 @@ export default function RegistrationForm() {
         }
         setErrors({ ...errors, [name]: "" });
     };
+
+    useEffect(() => {
+        if (authService.isAuthenticated()) {
+            setLogged(true)
+            setErrors({ general: "User already logged." });
+            setTimeout(() => {
+                navigate("/");
+                setLogged(false)
+                setErrors({});
+            }, 5000)
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,7 +63,7 @@ export default function RegistrationForm() {
 
             const response = await authService.register(data);
             console.log("Registration successful:", response);
-            navigate("/");
+            navigate("/about");
         } catch (err: any) {
             console.error("Raw registration error:", err);
             try {
@@ -66,17 +79,17 @@ export default function RegistrationForm() {
 
     return (
         <div className="flex flex-row flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 w-full">
-            <div className="w-full md:max-w-3xl p-8 rounded-md">
+            {errors.general && (
+                <div className="mb-4 text-red-600 text-center">
+                    {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+                </div>
+            )}
+            <div className="w-full md:max-w-3xl p-8 rounded-md" hidden={logged}>
                 <div className="mx-auto w-full mb-10">
                     <h1 className="text-center text-5xl md:text-2xl font-bold tracking-tight text-gray-900">
                         Create a new account
                     </h1>
                 </div>
-                {errors.general && (
-                    <div className="mb-4 text-red-600 text-center">
-                        {Array.isArray(errors.general) ? errors.general[0] : errors.general}
-                    </div>
-                )}
                 <form onSubmit={handleSubmit} className="space-y-8 w-full" encType="multipart/form-data">
                     <div className="flex flex-col md:flex-row gap-6 justify-center w-full">
                         <div className="md:w-1/2">
@@ -229,29 +242,6 @@ export default function RegistrationForm() {
                                 </div>
                             )}
                         </div>
-                    </div>
-
-                    <div className="w-full max-w-md mx-auto">
-                        <label
-                            htmlFor="image"
-                            className="block text-2xl md:text-sm font-medium text-gray-900 mb-2 text-center"
-                        >
-                            Profile Image (Optional)
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/jpeg,image/png,image/jpg"
-                            onChange={handleChange}
-                            className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                            disabled={loading}
-                        />
-                        {errors.image && (
-                            <div className="mt-1 text-red-600 text-sm">
-                                {Array.isArray(errors.image) ? errors.image[0] : errors.image}
-                            </div>
-                        )}
                     </div>
 
                     <div className="flex justify-center">

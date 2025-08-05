@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import SortMenu from "../../components/Product/SortMenu.tsx";
 import {useEffect, useState} from "react";
-const API_URL = "http://localhost:8000/api";
+import {API_URL, makeSimpleRequest} from "../../services/Requests.tsx";
 
 interface Product {
     id: number;
@@ -21,37 +21,12 @@ export default function ProductList() {
     const [loading, setLoading] = useState(false);
 
 
-    {/* do a request and returns the results (without being authentificated) */}
-    const makeAuthenticatedRequest = async (url: string) => {
-        try {
-            console.log('🔍 Making request to:', url);
-            const response = await fetch(url);
-            const text = await response.text();
-            console.log('🔍 Response status:', response.status, 'Response text:', text);
-
-            if (!response.ok) {
-                let errorMessage = `HTTP ${response.status}`;
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {
-                    errorMessage = text || errorMessage;
-                }
-                throw new Error(errorMessage);
-            }
-
-            return JSON.parse(text);
-        } catch (error) {
-            console.error('Fetch error:', error);
-            throw error;
-        }
-    };
 
     {/* function that fetchs all the products */}
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const data = await makeAuthenticatedRequest(`${API_URL}/products`);
+            const data = await makeSimpleRequest(`${API_URL}/products`);
             setProducts(data.data);
         } catch (error) {
             console.error("Failed to fetch products:", error);

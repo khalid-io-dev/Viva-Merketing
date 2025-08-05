@@ -3,7 +3,7 @@ import imga2 from "../../../ressources/images/product2.webp"
 import imga3 from "../../../ressources/images/product3.webp"
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {authService} from "../../services/AuthService.tsx";
+import {makeSimpleRequest, API_URL} from "../../services/Requests.tsx";
 interface Product {
     id: number;
     name: string;
@@ -15,7 +15,6 @@ interface Product {
     category: { id: number; name: string };
 }
 
-const API_URL = "http://localhost:8000/api";
 
 export default function DetailProduct() {
     const { id } = useParams();
@@ -23,33 +22,10 @@ export default function DetailProduct() {
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
     const [loading, setLoading] = useState(false);
 
-    const makeAuthenticatedRequest = async (url: string) => {
-        try {
-            const response = await fetch(url);
-            const text = await response.text();
-            console.log('🔍 Response status:', response.status, 'Response text:', text);
-
-            if (!response.ok) {
-                let errorMessage = `HTTP ${response.status}`;
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {
-                    errorMessage = text || errorMessage;
-                }
-                throw new Error(errorMessage);
-            }
-
-            return JSON.parse(text);
-        } catch (error) {
-            console.error('Fetch error:', error);
-            throw error;
-        }
-    };
     const fetchSingleProduct = async() => {
         try{
             setLoading(true);
-            const data = await makeAuthenticatedRequest(`${API_URL}/products/${id}`);
+            const data = await makeSimpleRequest(`${API_URL}/products/${id}`);
             setProduct(data);
         } catch (error){
             console.log("failed to fetch the product: ", error);

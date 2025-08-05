@@ -1,6 +1,6 @@
 import PriceSlider from "./PriceSlider.tsx";
 import {useEffect, useState} from "react";
-const API_URL = "http://localhost:8000/api";
+import {makeSimpleRequest, API_URL} from "../../services/Requests.tsx";
 
 
 interface Product {
@@ -32,38 +32,12 @@ export default function SortMenu({SendToParentProducts}: Props){
     const [activeFilter, setActiveFilter] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState<number>();
 
-    {/* do a request and returns the results (without being authentificated) */}
-
-    const makeAuthenticatedRequest = async (url: string) => {
-        try {
-            console.log('🔍 Making request to:', url);
-            const response = await fetch(url);
-            const text = await response.text();
-            console.log('🔍 Response status:', response.status, 'Response text for categories:', text);
-
-            if (!response.ok) {
-                let errorMessage = `HTTP ${response.status}`;
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {
-                    errorMessage = text || errorMessage;
-                }
-                throw new Error(errorMessage);
-            }
-
-            return JSON.parse(text);
-        } catch (error) {
-            console.error('Fetch error:', error);
-            throw error;
-        }
-    };
 
     {/* function that fetchs the products sorted by category */}
 
     const fetchSortedProductsByCategory = async () => {
         try {
-            const data = await makeAuthenticatedRequest(`${API_URL}/products/category/` + selectedCategory);
+            const data = await makeSimpleRequest(`${API_URL}/products/category/` + selectedCategory);
             SendToParentProducts(data);
             setProducts(data)
 
@@ -77,7 +51,7 @@ export default function SortMenu({SendToParentProducts}: Props){
     const fetchCategories = async () => {
         try {
             setLoading(true);
-            const data = await makeAuthenticatedRequest(`${API_URL}/categories`);
+            const data = await makeSimpleRequest(`${API_URL}/categories`);
             setCategories(data);
         } catch (error) {
             console.error("Failed to fetch categories:", error);
@@ -96,12 +70,12 @@ export default function SortMenu({SendToParentProducts}: Props){
     {/* SVGs */}
 
     const down = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"
-                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round">
         <polyline points="6 10 12 16 18 10" />
         <polyline points="6 18 12 24 18 18" />
     </svg>
 
-    const up = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    const up = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round">
         <polyline points="6 24 12 18 18 24" />
         <polyline points="6 16 12 10 18 16" />
     </svg>
