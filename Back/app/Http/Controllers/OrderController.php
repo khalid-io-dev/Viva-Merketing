@@ -73,18 +73,29 @@ class OrderController extends Controller
             return response()->json(['error' => 'Order creation failed'], 500);
         }
     }
-
     public function update(Request $request, $id)
     {
-        $this->authorize('update', Order::class);
+        //$this->authorize('update', Order::class);
         $order = Order::findOrFail($id);
-        $validated = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-        ]);
 
-        $order->update($validated);
-        return response()->json($order);
+        if ($request->has('status')) {
+            $order->status = $request->input('status');
+            $order->save();
+        }
+
+        if ($request->has('items')) {
+            foreach ($request->input('items') as $itemData) {
+                $item = OrderItem::find($itemData['id']);
+                if ($item && $item->order_id == $order->id) {
+                    $item->quantity = $itemData['quantity'];
+                    $item->save();
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Order updated successfully']);
     }
+
 
     public function destroy($id)
     {

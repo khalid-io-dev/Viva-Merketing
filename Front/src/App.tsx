@@ -18,7 +18,7 @@ import LayoutProfilePage from "./components/ProfilePage/LayoutProfilePage.tsx";
 import Account from "./components/ProfilePage/Account.tsx";
 import OrdersManagement from './components/ProfilePage/OrdersManagement.tsx';
 import Overview from "./components/ProfilePage/Overview.tsx";
-import UsersManagement from "./components/ProfilePage/UsersManagement.tsx";
+import UsersManagement from "./pages/Admin/UsersManagement.tsx";
 function App() {
     return (
         <BrowserRouter>

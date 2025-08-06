@@ -107,32 +107,28 @@ export default function Overview(){
                             <form className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">First name</label>
-                                    <input type="text" defaultValue={fname} disabled={!EditUser}
+                                    <input type="text" defaultValue={fname}
                                            className="w-full border rounded-md bg-transparent p-2 mt-1 bg-whiborder-gray-300" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Last name</label>
-                                    <input type="text" defaultValue={lname} disabled={!EditUser}
+                                    <input type="text" defaultValue={lname}
                                            className="w-full border rounded-md  bg-transparent p-2 mt-1 border-gray-300" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Phone</label>
-                                    <input type="tel" defaultValue={user?.phone} disabled={!EditUser}
+                                    <input type="tel" defaultValue={user?.phone}
                                            className="w-full border rounded-md bg-transparent p-2 mt-1 border-gray-300" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" defaultValue={user?.email} disabled={!EditUser}
+                                    <input type="email" defaultValue={user?.email}
                                            className="w-full border rounded-md bg-transparent p-2 mt-1 border-gray-300" />
                                 </div>
 
                                 {/* Footer buttons */}
                                 <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
                                     <div className="w-full flex justify-start">
-                                        <button type="button" onClick={() => setEditUser(true)} hidden={EditUser}
-                                                className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100 justify-start">
-                                            Edit
-                                        </button>
                                     </div>
 
                                     <button type="button" onClick={() => {

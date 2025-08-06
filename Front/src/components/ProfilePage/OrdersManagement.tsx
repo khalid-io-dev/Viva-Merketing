@@ -34,7 +34,7 @@ export default function OrdersManagement(){
     const [modal, setModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const admin = authService.isAdmin();
-    const [editOrder, setEditOrder] = useState(false);
+
 
     const handleDeleteOrder = async (id: number) => {
         if (!confirm("Do you really want to delete this order ?")) return;
@@ -69,6 +69,86 @@ export default function OrdersManagement(){
     useEffect(() => {
         fetchOrders()
     }, []);
+
+    const handleQuantityChange = (itemid: number, newQuantity: number) => {
+        const updateditem = selectedOrder?.items.map(item=>
+            item.id === itemid && item.product.stock >= newQuantity
+                ? { ...item, quantity:newQuantity }
+                : item
+        ) // we put all the items, with the quantity updated in the right item
+
+        if (newQuantity === 0) {
+            setErrors({ quantity: "Error : 0 isn't a valid quantity." });
+        } else {
+            setErrors({})
+        }
+
+        setSelectedOrder(
+            prevOrder => {
+                if (!prevOrder) return null;
+
+                return {
+                    ...prevOrder,
+                    items: updateditem,
+                }
+            }
+        )
+
+    }
+
+    const handleStatusChange = (newStatus: string) => {
+        setSelectedOrder(
+            prevState => {
+                if (!prevState) return null;
+                const tab = ['paid', 'pending', 'shipping'];
+                if (!tab.includes(newStatus)){
+                    setErrors({ status: "Error : 0 isn't a valid quantity." });
+                } else {
+                    setErrors({});
+                }
+                return {
+                    ...prevState,
+                    status: newStatus
+                }
+            }
+        )
+
+    }
+
+    const handleSave = async () => {
+        try {
+            const data = {
+                status: selectedOrder?.status,
+                items: selectedOrder?.items
+            }
+
+            setLoading(true)
+
+            const result = makeAuthenticatedRequest(`${API_URL}/orders/` + selectedOrder?.id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            await fetchOrders();
+
+            console.log("Result of the request : " + result)
+
+        } catch (error){
+            console.error("Failed to update order:", error);
+            try {
+                const errorData = JSON.parse(error.message);
+                setErrors(errorData);
+            } catch {
+                setErrors({ general: error.message || "Failed to update order" });
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
+
 
     return (
         <section className="antialiased  p-12 w-full h-full">
@@ -127,13 +207,26 @@ export default function OrdersManagement(){
                                         }}
                                         className="px-3 py-1 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
                                     >
-                                        View
+                                        Edit
                                     </button>
                                 </td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+
+            {/* Error Message */}
+            {errors.general && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
+                    <div className="flex items-center">
+                        <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+                    </div>
                 </div>
             )}
 
@@ -154,7 +247,6 @@ export default function OrdersManagement(){
                                 <tr>
                                     <th className="px-4 py-3">Order ID</th>
                                     <th className="px-4 py-3">Date</th>
-                                    <th className="px-4 py-3">Price</th>
                                     <th className="px-4 py-3">Status</th>
                                 </tr>
                                 </thead>
@@ -162,11 +254,30 @@ export default function OrdersManagement(){
                                 <tr>
                                     <td className="px-4 py-2">{selectedOrder.id}</td>
                                     <td className="px-4 py-2">{selectedOrder.created_at}</td>
-                                    <td className="px-4 py-2">{selectedOrder.total_price}</td>
-                                    <td className="px-4 py-2">{selectedOrder.status}</td>
+                                    <td className="px-4 py-2">
+                                        <select className="bg-white" defaultValue={selectedOrder.status}
+                                                id="status"
+                                                onChange={((e) => {
+                                                    handleStatusChange(e.target.value)
+                                                })}>
+                                            <option value="pending" id="statusOP">pending</option>
+                                            <option value="paid" id="statusOP">paid</option>
+                                            <option value="shipped" id="statusOP">shipped</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
+                            {errors.status && modal && (
+                                <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
+                                    <div className="flex items-center">
+                                        <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {Array.isArray(errors.quantity) ? errors.quantity[0] : errors.quantity}
+                                    </div>
+                                </div>
+                            )}
                             <div className="text-gray-700">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Order products</label>
                                 <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-xl">
@@ -179,23 +290,74 @@ export default function OrdersManagement(){
                                     </tr>
                                     </thead>
                                     <tbody>
+
+                                    {!loading && selectedOrder.items.length === 0 && (
+                                        <div className="text-center text-gray-600">No items found.</div>
+                                    )}
+
                                     {selectedOrder.items.map((productItem, index) => (
                                         <tr key={index} className="border-b hover:bg-gray-50">
                                             <td className="px-4 py-2">{productItem.product.id}</td>
                                             <td className="px-4 py-2">{productItem.product.name}</td>
                                             <td className="px-4 py-2">{productItem.product.price} €</td>
-                                            <td className="px-4 py-2">{productItem.quantity}</td>
+                                            <td className="px-4 py-2">
+                                                <input
+                                                    type="number"
+                                                    min={1}
+                                                    max={productItem.product.stock}
+                                                    className="w-16 bg-white border rounded px-2 py-1 text-center"
+                                                    value={productItem.quantity}
+                                                    onChange={(e) => handleQuantityChange(productItem.id, parseInt(e.target.value))}
+                                                />
+                                            </td>
+
                                         </tr>
                                     ))}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {errors.quantity && modal && (
+                                <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
+                                    <div className="flex items-center">
+                                        <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {Array.isArray(errors.quantity) ? errors.quantity[0] : errors.quantity}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex flex-row items-center justify-center pt-8">
+                                <table className="w-full text-sm text-center text-gray-700 border border-gray-300 rounded-xl mb-6 w-48">
+                                    <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
+                                    <tr>
+                                        <th>Total price</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            {selectedOrder.total_price}
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                                <button onClick={() => setModalOpen(false)} className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100">
-                                    Edit
-                                </button>
-                                <button onClick={() => setEditOrder(true)} className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100">
+                                <button onClick={() => {
+                                    setModalOpen(false);
+                                    setErrors({})
+                                }} className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100">
                                     Close
+                                </button>
+                                <button onClick={()=> {
+                                    setModalOpen(false)
+                                    setErrors({})
+                                    handleSave()
+                                }} className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100">
+                                    Save
                                 </button>
                             </div>
 

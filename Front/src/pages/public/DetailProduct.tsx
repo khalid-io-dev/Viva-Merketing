@@ -107,7 +107,7 @@ export default function DetailProduct() {
                     {/* Contenu des infos produit ici */}
                     <h1 className="items-start text-2xl  md:text-xl">{product.category.name}</h1>
                     <h1 className="text-4xl  md:text-2xl  mb-4 jus font-bold text-black">{product.name}</h1>
-                    <p className="text-2xl md:text-lg text-gray-600 mb-2">Price : <strong>{product.price}</strong></p>
+                    <p className="text-2xl md:text-lg text-gray-600 mb-2">Price : $<strong>{product.price}</strong></p>
                     <div className="">
                         <p className=" text-4xl md:text-sm text-gray-500 whitespace-pre-line">{product.description}</p>
                     </div>
