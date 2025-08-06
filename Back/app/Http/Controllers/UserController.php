@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -14,9 +16,10 @@ use Illuminate\Routing\Controller;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct()
     {
-        $this->middleware('auth:sanctum', ['except' => ['register', 'login']]); 
+        $this->middleware('auth:sanctum', ['except' => ['register', 'login']]);
     }
 
     public function register(Request $request)
@@ -174,7 +177,7 @@ class UserController extends Controller
         try {
             $this->authorize('viewAny', User::class);
             $users = User::with('roles')->get();
-            return response()->json(['users' => $users]);
+            return response()->json(['trico' => $users]);
         } catch (\Exception $e) {
             \Log::error('Index error: ' . $e->getMessage());
             return response()->json([

@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\OrderItemController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -43,6 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
+
+    //Order items routes
+    Route::put('/item/{id}', [OrderItemController::class, 'update']);
 
     // Admin routes
 
