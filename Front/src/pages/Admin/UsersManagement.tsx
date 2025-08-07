@@ -29,6 +29,8 @@ export default function UsersManagement(){
         }
     }, []);
 
+
+
     const handleDeleteUser = async (id: number) => {
         if (!confirm("Do you really want to delete this user ?")) return;
         if (!admin) return;

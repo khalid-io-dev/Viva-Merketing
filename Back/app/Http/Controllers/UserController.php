@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth; // ADD THIS LINE
@@ -147,6 +148,18 @@ class UserController extends Controller
                 $validated['password'] = Hash::make($validated['password']);
             } else {
                 $validated['password'] = $user->password;
+            }
+
+            $listeUsers = DB::table('users')->get();
+
+            /* Mail or phone exists already */
+            foreach ($listeUsers as $existingUser) {
+                if ($existingUser->email == $validated['email'] && $existingUser->id !== $user->id){
+                    throw ValidationException::withMessages(['email' => 'Email already exists']);
+                }
+                if ($existingUser->phone == $validated['phone'] && $existingUser->id !== $user->id){
+                    throw ValidationException::withMessages(['phone' => 'Phone already exists' ]);
+                }
             }
 
             $user->update($validated);

@@ -48,7 +48,7 @@ export default function Overview() {
             errors.email = "Email invalid (must contain @ and no spaces).";
         }
 
-        if (password && password.length < 8) {
+        if (password && password.length < 10) {
             errors.password = "Password must be at least 8 characters.";
         }
         if (password !== confirmpassword) {
@@ -95,7 +95,6 @@ export default function Overview() {
         const validationErrors = validateInputs(draftfname, draftlname, draftphone, draftemail, password, confirmPassword);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-            console.log(errors)
             return;
         }
 
@@ -108,7 +107,6 @@ export default function Overview() {
                 phone: draftphone,
                 email: draftemail,
             };
-
             if (password) {
                 data.password = password;
             }
@@ -127,24 +125,27 @@ export default function Overview() {
             setPhone(draftphone);
             setPassword("");
             setConfirmPassword("");
-
-            setUpdated(true);
             setErrors({}); // Clear errors on success
-            console.log("Result of the request:", result);
-            setIsModalOpen(false); // On ferme la modale uniquement ici, après succès
+            setUpdated(true);
+            setIsModalOpen(false);
         } catch (error: any) {
+
             console.error("Failed to update user:", error);
-            try {
-                const errorData = JSON.parse(error.message);
-                setErrors(errorData);
-            } catch {
-                setErrors({ general: error.message || "Failed to update user" });
+            if (error.errors?.email) {
+                setErrors({ email: error.errors.email[0] });
+            } else if (error.errors?.phone) {
+                setErrors({ phone: error.errors.phone[0] });
+            } else {
+                setErrors({ general: "Une erreur est survenue." });
             }
-        } finally {
+
+        }
+        finally {
             setLoading(false);
             setTimeout(() => setUpdated(false), 3000);
         }
     };
+
 
     // Le bouton Save sera désactivé s'il y a des erreurs
     const isSaveDisabled = Object.keys(errors).length > 0;
@@ -302,8 +303,15 @@ export default function Overview() {
                     <div className="bg-white rounded-2xl w-full max-w-xl shadow-lg border border-white/20 max-h-[90vh] overflow-y-auto">
                         <div className="p-8">
                             {/* Header */}
-                            <div className="flex items-center justify-between mb-6">
+                            <div className="flex flex-col items-center justify-between mb-6">
+
+                                {errors.general && (
+                                    <div className="text-red-700">
+                                            {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+                                    </div>
+                                )}
                                 <h2 className="text-2xl font-bold text-gray-800">Edit Account</h2>
+
                                 <button
                                     onClick={() => {
                                         setIsModalOpen(false);
@@ -403,6 +411,7 @@ export default function Overview() {
                                             setErrors({});
                                             setPassword("");
                                             setConfirmPassword("");
+                                            window.location.reload();
                                         }}
                                         className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100"
                                     >

@@ -63,7 +63,7 @@ export default function RegistrationForm() {
 
             const response = await authService.register(data);
             console.log("Registration successful:", response);
-            navigate("/about");
+            navigate("/");
         } catch (err: any) {
             console.error("Raw registration error:", err);
             try {
@@ -79,9 +79,9 @@ export default function RegistrationForm() {
 
     return (
         <div className="flex flex-row flex-grow justify-center items-center bg-gray-50 px-6 py-4 lg:px-8 w-full">
-            {errors.general && (
+            {errors.email && (
                 <div className="mb-4 text-red-600 text-center">
-                    {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+                    {Array.isArray(errors.email) ? errors.email[0] : errors.email}
                 </div>
             )}
             <div className="w-full md:max-w-3xl p-8 rounded-md" hidden={logged}>
