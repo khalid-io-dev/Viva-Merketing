@@ -133,6 +133,7 @@ class UserController extends Controller
                 'email' => ['string', 'email', Rule::unique('users')->ignore($user->id)],
                 'phone' => 'string|max:20',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'password' => 'nullable|string|max:20'
             ]);
 
             if ($request->hasFile('image')) {
@@ -140,6 +141,12 @@ class UserController extends Controller
                     Storage::disk('public')->delete($user->image);
                 }
                 $validated['image'] = $request->file('image')->store('user_images', 'public');
+            }
+
+            if (request('password')) {
+                $validated['password'] = Hash::make($validated['password']);
+            } else {
+                $validated['password'] = $user->password;
             }
 
             $user->update($validated);
@@ -177,7 +184,7 @@ class UserController extends Controller
         try {
             $this->authorize('viewAny', User::class);
             $users = User::with('roles')->get();
-            return response()->json(['trico' => $users]);
+            return response()->json($users);
         } catch (\Exception $e) {
             \Log::error('Index error: ' . $e->getMessage());
             return response()->json([

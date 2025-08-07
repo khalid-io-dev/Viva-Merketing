@@ -9,6 +9,8 @@ export default function Overview() {
 
     const [updated, setUpdated] = useState(false);
     const [phone, setPhone] = useState<string>(user?.phone || "");
+    const [password, setPassword] = useState<string>("");
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [email, setEmail] = useState<string>(user?.email || "");
     const [fname, setFname] = useState<string>(informations[0] || "");
     const [lname, setLname] = useState<string>(informations.slice(1).join(" ") || "");
@@ -26,22 +28,34 @@ export default function Overview() {
         fname: string,
         lname: string,
         phone: string,
-        email: string
+        email: string,
+        password: string,
+        confirmpassword: string,
     ): Record<string, string> => {
         const errors: Record<string, string> = {};
         const hasDigit = /\d/;
 
-        if (!fname || fname.includes(" ") || hasDigit.test(fname) || fname.length < 3) {
-            errors.fname = "First name invalid (min 3 chars, no spaces or digits).";
+        if (!fname || hasDigit.test(fname) || fname.length < 3) {
+            errors.fname = "First name invalid (min 3 chars, no digits).";
         }
-        if (!lname || lname.includes(" ") || hasDigit.test(lname) || lname.length < 3) {
-            errors.lname = "Last name invalid (min 3 chars, no spaces or digits).";
+        if (!lname || hasDigit.test(lname) || lname.length < 3) {
+            errors.lname = "Last name invalid (min 3 chars, no digits).";
         }
-        if (!phone || phone.includes(" ")) {
-            errors.phone = "Phone invalid (no spaces).";
+        if (phone && phone.length < 8) {
+            errors.phone = "Phone invalid (no spaces, no letters).";
         }
         if (!email || email.includes(" ") || !email.includes("@")) {
             errors.email = "Email invalid (must contain @ and no spaces).";
+        }
+
+        // Validation password :
+        // - si password rempli, il doit faire min 8 caractères
+        if (password && password.length < 8) {
+            errors.password = "Password must be at least 8 characters.";
+        }
+        // confirmation doit toujours correspondre au password
+        if (password !== confirmpassword) {
+            errors.confirmpassword = "Passwords do not match.";
         }
 
         return errors;
@@ -55,6 +69,12 @@ export default function Overview() {
             case "email":
                 setdraftEmail(newData);
                 break;
+            case "confirmpassword":
+                setConfirmPassword(newData);
+                break;
+            case "password":
+                setPassword(newData);
+                break;
             case "fname":
                 setdraftFname(newData);
                 break;
@@ -67,28 +87,35 @@ export default function Overview() {
             type === "fname" ? newData : draftfname,
             type === "lname" ? newData : draftlname,
             type === "phone" ? newData : draftphone,
-            type === "email" ? newData : draftemail
+            type === "email" ? newData : draftemail,
+            type === "password" ? newData : password,
+            type === "confirmpassword" ? newData : confirmPassword
         );
         setErrors(newErrors);
     };
 
     // Enregistrement des données avec validation complète
     const handleSave = async () => {
-        const validationErrors = validateInputs(draftfname, draftlname, draftphone, draftemail);
+        const validationErrors = validateInputs(draftfname, draftlname, draftphone, draftemail, password, confirmPassword);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            console.log(errors)
             return; // On arrête si erreurs
         }
 
         try {
             setLoading(true);
 
-            const data = {
+            const data: any = {
                 id: user?.id,
                 name: draftfname + " " + draftlname,
                 phone: draftphone,
                 email: draftemail,
             };
+
+            if (password) {
+                data.password = password;
+            }
 
             const result = await makeAuthenticatedRequest(`${API_URL}/profile`, {
                 method: "PUT",
@@ -102,10 +129,13 @@ export default function Overview() {
             setLname(draftlname);
             setEmail(draftemail);
             setPhone(draftphone);
+            setPassword("");
+            setConfirmPassword("");
 
             setUpdated(true);
             setErrors({}); // Clear errors on success
             console.log("Result of the request:", result);
+            setIsModalOpen(false); // On ferme la modale uniquement ici, après succès
         } catch (error: any) {
             console.error("Failed to update user:", error);
             try {
@@ -119,6 +149,9 @@ export default function Overview() {
             setTimeout(() => setUpdated(false), 3000);
         }
     };
+
+    // Le bouton Save sera désactivé s'il y a des erreurs
+    const isSaveDisabled = Object.keys(errors).length > 0;
 
     return (
         <div className="flex flex-col top-0 justify-center border-black h-full w-full text-black pr-10">
@@ -160,6 +193,7 @@ export default function Overview() {
                             <th>Last name</th>
                             <th>Number</th>
                             <th>Mail</th>
+                            <th>password</th>
                             <th>EDIT</th>
                         </tr>
                         </thead>
@@ -169,6 +203,7 @@ export default function Overview() {
                             <td>{lname}</td>
                             <td>{phone}</td>
                             <td>{email}</td>
+                            <td>***********</td>
                             <td>
                                 <button onClick={() => setIsModalOpen(true)}>
                                     <svg
@@ -290,7 +325,7 @@ export default function Overview() {
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                                    <label className="block text-sm font-medium text-gray-700">Mail</label>
                                     <input
                                         type="email"
                                         value={draftemail}
@@ -301,6 +336,32 @@ export default function Overview() {
                                         <div className="mt-1 text-red-600 text-sm">{errors.email}</div>
                                     )}
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => handleChange(e.target.value, "password")}
+                                        className="w-full border rounded-md bg-transparent p-2 mt-1 border-gray-300"
+                                    />
+                                    {errors.password && (
+                                        <div className="mt-1 text-red-600 text-sm">{errors.password}</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Confirm password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                        value={confirmPassword}
+                                        onChange={(e) => handleChange(e.target.value, "confirmpassword")}
+                                        className="w-full border rounded-md bg-transparent p-2 mt-1 border-gray-300"
+                                    />
+                                    {errors.confirmpassword && (
+                                        <div className="mt-1 text-red-600 text-sm">{errors.confirmpassword}</div>
+                                    )}
+                                </div>
 
                                 {/* Footer buttons */}
                                 <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
@@ -309,6 +370,8 @@ export default function Overview() {
                                         onClick={() => {
                                             setIsModalOpen(false);
                                             setErrors({});
+                                            setPassword("");
+                                            setConfirmPassword("");
                                         }}
                                         className="px-5 py-2 border rounded-xl text-gray-600 hover:bg-gray-100"
                                     >
@@ -316,13 +379,9 @@ export default function Overview() {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            if (Object.keys(errors).length === 0) {
-                                                handleSave();
-                                                setIsModalOpen(false);
-                                            }
-                                        }}
-                                        className="px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                                        onClick={handleSave}
+                                        className={`px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50`}
+                                        disabled={isSaveDisabled || loading}
                                     >
                                         Save
                                     </button>

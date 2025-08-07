@@ -5,8 +5,9 @@ import {authService} from "../../services/AuthService.tsx";
 interface User {
     id: number;
     name: string;
-    mail: string;
+    email: string;
     phone: number;
+    password: string;
 }
 
 export default function UsersManagement(){
@@ -18,12 +19,22 @@ export default function UsersManagement(){
     const admin = authService.isAdmin();
     const [selecteduser, setSelectedUser] = useState<User>()
 
+
+    /* check admin access */
+    useEffect(() => {
+        if (!authService.isAuthenticated()) {
+            setErrors({ general: "Please log in to access this page" });
+        } else if (!authService.isAdmin()) {
+            setErrors({ general: "Unauthorized: Admin access required" });
+        }
+    }, []);
+
     const handleDeleteUser = async (id: number) => {
         if (!confirm("Do you really want to delete this user ?")) return;
         if (!admin) return;
         try {
             setLoading(true);
-            await makeAuthenticatedRequest(`${API_URL}/users` + id, { method: "DELETE" });
+            await makeAuthenticatedRequest(`${API_URL}/users/` + id, { method: "DELETE" });
             await fetchUsers();
             alert("User deleted !");
         } catch (error: any) {
@@ -35,11 +46,12 @@ export default function UsersManagement(){
     }
 
     const fetchUsers = async () => {
+        if (!admin) return
         try {
             const FetchUrl = "/users";
             setLoading(true);
             const data = await makeAuthenticatedRequest(`${API_URL}` + FetchUrl);
-            setUsers(data.data);
+            setUsers(data);
         } catch (error) {
             console.error("Failed to fetch user:", error);
             setErrors({ general: "Failed to load user" });
@@ -63,12 +75,23 @@ return (
             </div>
         )}
 
-        {!loading && users.length === 0 && (
+        {!loading && !users && (
             <div className="text-center text-gray-600">No user found.</div>
         )}
 
-        {!loading && users.length > 0 && (
+        {!loading && users && (
             <div className="mx-auto max-w-5xl">
+                {/* Error Message */}
+                {errors.general && (
+                    <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
+                        <div className="flex items-center">
+                            <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {Array.isArray(errors.general) ? errors.general[0] : errors.general}
+                        </div>
+                    </div>
+                )}
                 <div className="pb-10">
                     <h1 className="text-4xl font-bold bg-gradient-to-r  from-slate-800 text-gray-50 mb-2">
                         Users Management
@@ -80,10 +103,10 @@ return (
                     <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
                     <tr>
                         <th className="px-4 py-3">User ID</th>
-                        <th className="px-4 py-3">First name</th>
-                        <th className="px-4 py-3">Last name</th>
+                        <th className="px-4 py-3">name</th>
                         <th className="px-4 py-3">Mail</th>
                         <th className="px-4 py-3">Phone</th>
+                        <th className="px-4 py-3">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,24 +114,24 @@ return (
                         <tr key={user.id} className="buser-b">
                             <td className="px-4 py-2">{user.id}</td>
                             <td className="px-4 py-2">{user.name}</td>
-                            <td className="px-4 py-2">{user.name}</td>
-                            <td className="px-4 py-2">{user.mail}</td>
+                            <td className="px-4 py-2">{user.email}</td>
                             <td className="px-4 py-2">{user.phone}</td>
                             <td className="px-4 py-2 space-x-2">
                                     <button
                                         onClick={() => handleDeleteUser(user.id)}
                                         className="px-3 py-1 buser buser-red-700 text-red-700 rounded hover:bg-red-700 hover:text-white"
                                     >
-                                        Cancel
+                                        Delete
                                     </button>
-                                <button
+                                {/*<button
                                     onClick={()=> {
                                         setSelectedUser(user)
+                                        setModalOpen(true)
                                     }}
                                     className="px-3 py-1 buser buser-gray-400 text-gray-700 rounded hover:bg-gray-100"
                                 >
                                     View
-                                </button>
+                                </button>*/}
                             </td>
                         </tr>
                     ))}
@@ -140,41 +163,15 @@ return (
                             </thead>
                             <tbody>
                             <tr>
-                                <td className="px-4 py-2">{selecteduser.id}</td>
+                                <td className="px-4 py-2">{selecteduser?.id}</td>
                                 <td className="px-4 py-2">{selecteduser?.name}</td>
-                                <td className="px-4 py-2">{selecteduser?.mail}</td>
+                                <td className="px-4 py-2">{selecteduser?.email}</td>
                                 <td className="px-4 py-2">{selecteduser?.phone}</td>
                             </tr>
                             </tbody>
                         </table>
-                        <div className="text-gray-700">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">user products</label>
-                            <table className="w-full text-sm text-left text-gray-700 buser buser-gray-300 rounded-xl">
-                                <thead className="text-xs text-gray-600 uppercase bg-gray-100 buser-b">
-                                <tr>
-                                    <th className="px-4 py-3">ID</th>
-                                    <th className="px-4 py-3">Name</th>
-                                    <th className="px-4 py-3">Price</th>
-                                    <th className="px-4 py-3">Quantity</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {selecteduser.items.map((productItem, index) => (
-                                    <tr key={index} className="buser-b hover:bg-gray-50">
-                                        <td className="px-4 py-2">{productItem.product.id}</td>
-                                        <td className="px-4 py-2">{productItem.product.name}</td>
-                                        <td className="px-4 py-2">{productItem.product.price} €</td>
-                                        <td className="px-4 py-2">{productItem.quantity}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
                         <div className="flex justify-end space-x-3 pt-6 buser-t buser-gray-200">
                             <button onClick={() => setModalOpen(false)} className="px-5 py-2 buser rounded-xl text-gray-600 hover:bg-gray-100">
-                                Edit
-                            </button>
-                            <button onClick={() => setEdituser(true)} className="px-5 py-2 buser rounded-xl text-gray-600 hover:bg-gray-100">
                                 Close
                             </button>
                         </div>
