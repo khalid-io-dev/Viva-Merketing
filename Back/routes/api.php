@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin user management routes
     Route::get('/users', [UserController::class, 'index'])->middleware('admin');
     Route::get('/users/{id}', [UserController::class, 'show'])->middleware('admin');
+    Route::put('/users/{id}', [UserController::class, 'update'])->middleware('admin');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('admin');
 
     // Cart routes

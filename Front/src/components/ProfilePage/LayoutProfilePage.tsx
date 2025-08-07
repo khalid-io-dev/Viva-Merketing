@@ -40,7 +40,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div className=" w-[450px] text-black text-xl p-10  font-mono">
                 <div className="flex flex-col gap-10  p-10 items-center">
                     <Link to="/profile"><button>Overview</button></Link>
-                    <Link to="/orders"><button>Orders</button></Link>
+                    <Link to="/orders"><button>{admin ? "Orders" :  "My Orders"}</button></Link>
 
                     {admin ?
                         (<Link to="/admin/products"><button>Products</button></Link>
