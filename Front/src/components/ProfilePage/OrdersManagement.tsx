@@ -167,6 +167,25 @@ export default function OrdersManagement() {
 
 return (
         <section className="antialiased  p-12 w-full h-full">
+
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+                            Orders Management
+                        </h1>
+                        <p className="text-slate-600 text-lg">{admin ? " Manage the orders of your web site. " : "Manage your orders"}</p>
+                    </div>
+                    <div className="hidden md:flex items-center space-x-4">
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {loading && (
                 <div className="text-center">
                     <div className="inline-flex items-center space-x-3">
@@ -199,65 +218,63 @@ return (
             )}
 
             {!loading && orders.length > 0 && (
-                <div className="mx-auto max-w-5xl">
-                    <div className="pb-10">
-                        <h1 className="text-4xl font-bold bg-gradient-to-r  from-slate-800 text-gray-50 mb-2">
-                            {admin ? "ORDERS MANAGEMENT" : "My orders"}
-                        </h1>
-                        <p className="text-slate-600 text-lg">Manage all the orders in this page.</p>
-                    </div>
-
-                    <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-xl">
-                        <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
-                        <tr>
-                            <th className="px-4 py-3">Order ID</th>
-                            <th className="px-4 py-3">Date</th>
-                            <th className="px-4 py-3">Price</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3">Actions</th>
+                <div className="overflow-x-auto rounded-xl border border-gray-300 shadow-sm mx-auto max-w-5xl bg-white">
+                    <table className="bg-white/70 w-full p-8 mb-8 rounded-3xl">
+                        <thead>
+                        <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Order ID</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Date</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Price</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Status</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-slate-100">
                         {orders.map((order) => (
-                            <tr key={order.id} className="border-b">
-                                <td className="px-4 py-2">{order.id}</td>
-                                <td className="px-4 py-2">{order.created_at}</td>
-                                <td className="px-4 py-2">{order.total_price}</td>
-                                <td className="px-4 py-2">{order.status}</td>
-                                <td className="px-4 py-2 space-x-2">
-                                    {admin && (
-                                        <button
-                                            onClick={() => handleDeleteOrder(order.id)}
-                                            className="px-3 py-1 border border-red-700 text-red-700 rounded hover:bg-red-700 hover:text-white"
-                                        >
-                                            Cancel
-                                        </button>
-                                    )}
-                                    {admin ? (
-                                        <button
-                                        onClick={() => {
-                                            setSelectedOrder(order);
-                                            setModalOpen(true);
-                                        }}
-                                        className="px-3 py-1 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
-                                    >
-                                        Edit
-                                    </button>
-                                        ) :
+                            <tr key={order.id} className="hover:bg-blue-50/50 transition-colors duration-150">
+                                <td className="py-4 px-6 font-semibold text-slate-800">{order.id}</td>
+                                <td className="py-4 px-6 font-semibold text-slate-800">{order.created_at}</td>
+                                <td className="py-4 px-6 font-semibold text-slate-800">{order.total_price}</td>
+                                <td className="py-4 px-6 font-semibold text-slate-800">{order.status}</td>
+                                <td className="py-4 px-6">
+                                    <div className="flex items-center space-x-3">
+                                        {admin && (
+                                            <button
+                                                onClick={() => handleDeleteOrder(order.id)}
+                                                className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-sm font-medium"
+                                            >
+                                                <svg
+                                                    className="w-4 h-4 mr-1"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                    />
+                                                </svg>
+                                                Cancel
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 setSelectedOrder(order);
                                                 setModalOpen(true);
                                             }}
-                                            className="px-3 py-1 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
+                                            className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
                                         >
-                                            Details
-                                        </button>}
+                                            {admin ? 'Edit' : 'Details'}
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
+
                 </div>
             )}
 

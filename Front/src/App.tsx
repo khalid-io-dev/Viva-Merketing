@@ -19,6 +19,7 @@ import Account from "./components/ProfilePage/Account.tsx";
 import OrdersManagement from './components/ProfilePage/OrdersManagement.tsx';
 import Overview from "./components/ProfilePage/Overview.tsx";
 import UsersManagement from "./pages/Admin/UsersManagement.tsx";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard.tsx";
 function App() {
     return (
         <BrowserRouter>
@@ -28,7 +29,13 @@ function App() {
                 <Route path="/profile" element={<Layout><LayoutProfilePage><Overview/></LayoutProfilePage></Layout>} />
                 <Route path="/orders" element={<Layout><LayoutProfilePage><OrdersManagement/></LayoutProfilePage></Layout>} />
                 <Route path="/account" element={<Layout><LayoutProfilePage><Account/></LayoutProfilePage></Layout>} />
-                <Route path="/admin/products" element={<Layout><ProductsManagementPage /></Layout>} />
+
+                {/* Dashboard for admin */}
+
+                <Route path="/admin/dashboard" element={<Dashboard>{null}</Dashboard>} />
+                <Route path="/admin/dashboard/products" element={<Dashboard><ProductsManagementPage /></Dashboard>} />
+                <Route path="/admin/dashboard/users" element={<Dashboard><UsersManagement /></Dashboard>} />
+                <Route path="/admin/dashboard/orders" element={<Dashboard><OrdersManagement /></Dashboard>} />
 
                 {/* Home */}
                 <Route path="/products/:id" element={<Layout><DetailProduct /></Layout>} />

@@ -9,6 +9,7 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false);
     const [logged, setLogged] = useState(false);
     const navigate = useNavigate();
+    const admin = authService.isAdmin();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +39,7 @@ export default function LoginForm() {
                 password: formData.password,
             });
             console.log("Login successful:", response);
-            navigate("/");
+            navigate(!admin ? "/admin/dashboard/products" : "/");
         } catch (err: any) {
             try {
                 const errorData = JSON.parse(err.message);

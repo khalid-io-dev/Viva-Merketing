@@ -48,12 +48,9 @@ export default function Overview() {
             errors.email = "Email invalid (must contain @ and no spaces).";
         }
 
-        // Validation password :
-        // - si password rempli, il doit faire min 8 caractères
         if (password && password.length < 8) {
             errors.password = "Password must be at least 8 characters.";
         }
-        // confirmation doit toujours correspondre au password
         if (password !== confirmpassword) {
             errors.confirmpassword = "Passwords do not match.";
         }
@@ -94,13 +91,12 @@ export default function Overview() {
         setErrors(newErrors);
     };
 
-    // Enregistrement des données avec validation complète
     const handleSave = async () => {
         const validationErrors = validateInputs(draftfname, draftlname, draftphone, draftemail, password, confirmPassword);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             console.log(errors)
-            return; // On arrête si erreurs
+            return;
         }
 
         try {
@@ -155,6 +151,24 @@ export default function Overview() {
 
     return (
         <div className="flex flex-col top-0 justify-center border-black h-full w-full text-black pr-10">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+                            Account informations
+                        </h1>
+                        <p className="text-slate-600 text-lg">Manage the informations of your account.</p>
+                    </div>
+                    <div className="hidden md:flex items-center space-x-4">
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {updated && !loading && (
                 <div className="pb-6 w-auto rounded-3xl justify-center h-auto ">
                     <div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-emerald-50 border border-emerald-200/50 text-emerald-700 rounded-xl shadow-lg backdrop-blur-sm">
@@ -173,9 +187,6 @@ export default function Overview() {
                 </div>
             )}
 
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 text-gray-50 mb-2">
-                Account informations
-            </h1>
 
             {loading ? (
                 <div className="text-center">
@@ -186,26 +197,30 @@ export default function Overview() {
                 </div>
             ) : (
                 <div className="pb-10">
-                    <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-xl pr-6">
-                        <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
-                        <tr>
-                            <th>First name</th>
-                            <th>Last name</th>
-                            <th>Number</th>
-                            <th>Mail</th>
-                            <th>password</th>
-                            <th>EDIT</th>
+                    <table className="bg-white/70 w-full p-8 mb-8 rounded-3xl">
+                        <thead>
+                        <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">First name</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Last name</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Number</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Mail</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Password</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Edit</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>{fname}</td>
-                            <td>{lname}</td>
-                            <td>{phone}</td>
-                            <td>{email}</td>
-                            <td>***********</td>
-                            <td>
-                                <button onClick={() => setIsModalOpen(true)}>
+                        <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-blue-50/50 transition-colors duration-150">
+                            <td className="py-4 px-6 font-semibold text-slate-800">{fname}</td>
+                            <td className="py-4 px-6 font-semibold text-slate-800">{lname}</td>
+                            <td className="py-4 px-6 font-semibold text-slate-800">{phone}</td>
+                            <td className="py-4 px-6 text-slate-600">{email}</td>
+                            <td className="py-4 px-6 text-slate-600">***********</td>
+                            <td className="py-4 px-6">
+                                <button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
+                                    aria-label="Edit user"
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -221,32 +236,48 @@ export default function Overview() {
                         </tr>
                         </tbody>
                     </table>
+
                 </div>
             )}
 
             {!admin && (
                 <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 text-gray-50 mb-2">
-                        Last order
-                    </h1>
-                    <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-xl">
-                        <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
-                        <tr>
-                            <th className="px-4 py-3">Order ID</th>
-                            <th className="px-4 py-3">Date</th>
-                            <th className="px-4 py-3">Price</th>
-                            <th className="px-4 py-3">Status</th>
+                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+                                    Last order
+                                </h1>
+                                <p className="text-slate-600 text-lg">Check your last order.</p>
+                            </div>
+                            <div className="hidden md:flex items-center space-x-4">
+                                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full">
+                                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table className="bg-white/70 w-full p-8 mb-8 rounded-3xl">
+                        <thead>
+                        <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Order ID</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Date</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Price</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Status</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr className="border-b">
-                            <td className="px-4 py-2">id</td>
-                            <td className="px-4 py-2">date</td>
-                            <td className="px-4 py-2">price</td>
-                            <td className="px-4 py-2">status</td>
+                        <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-blue-50/50 transition-colors duration-150">
+                            <td className="py-4 px-6 font-semibold text-slate-800">id</td>
+                            <td className="py-4 px-6 font-semibold text-slate-800">date</td>
+                            <td className="py-4 px-6 font-semibold text-slate-800">price</td>
+                            <td className="py-4 px-6 font-semibold text-slate-800">status</td>
                         </tr>
                         </tbody>
                     </table>
+
                     {errors.order && (
                         <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 text-red-700 rounded-xl shadow-lg backdrop-blur-sm">
                             <div className="flex items-center">

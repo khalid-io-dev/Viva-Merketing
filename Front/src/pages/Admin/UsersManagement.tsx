@@ -66,6 +66,28 @@ export default function UsersManagement(){
 
 return (
     <section className="antialiased  p-12 w-full h-full">
+
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+                        Users Management
+                    </h1>
+                    <p className="text-slate-600 text-lg">Manage the users of your web site.</p>
+                </div>
+                <div className="hidden md:flex items-center space-x-4">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
         {loading && (
             <div className="text-center">
                 <div className="inline-flex items-center space-x-3">
@@ -92,51 +114,61 @@ return (
                         </div>
                     </div>
                 )}
-                <div className="pb-10">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r  from-slate-800 text-gray-50 mb-2">
-                        Users Management
-                    </h1>
-                    <p className="text-slate-600 text-lg">Manage all the users in this page.</p>
+
+                <div className="mx-auto max-w-14xl">
+                        <table className=" bg-white/70 w-full p-8 mb-8 rounded-3xl ">
+                            <thead>
+                            <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">User ID</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">First name</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Last name</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Mail</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Phone</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                            {users.map((user) => (
+                                <tr key={user.id} className="hover:bg-blue-50/50 transition-colors duration-150 ">
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.id}</td>
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
+                                    <td className="py-4 px-6 text-slate-600">{user.email}</td>
+                                    <td className="py-4 px-6 text-slate-600">{user.phone}</td>
+                                    <td className="py-4 px-6">
+                                        <div className="flex items-center space-x-3">
+                                            <button
+                                                onClick={() => handleDeleteUser(user.id)}
+                                                className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-sm font-medium"
+                                            >
+                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                    />
+                                                </svg>
+                                                Delete
+                                            </button>
+                                            {/* <button
+                onClick={() => {
+                  setSelectedUser(user);
+                  setModalOpen(true);
+                }}
+                className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
+              >
+                View
+              </button> */}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+
                 </div>
 
-                <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-xl">
-                    <thead className="text-xs text-gray-600 uppercase bg-gray-100 border-b">
-                    <tr>
-                        <th className="px-4 py-3">User ID</th>
-                        <th className="px-4 py-3">name</th>
-                        <th className="px-4 py-3">Mail</th>
-                        <th className="px-4 py-3">Phone</th>
-                        <th className="px-4 py-3">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {users.map((user) => (
-                        <tr key={user.id} className="buser-b">
-                            <td className="px-4 py-2">{user.id}</td>
-                            <td className="px-4 py-2">{user.name}</td>
-                            <td className="px-4 py-2">{user.email}</td>
-                            <td className="px-4 py-2">{user.phone}</td>
-                            <td className="px-4 py-2 space-x-2">
-                                    <button
-                                        onClick={() => handleDeleteUser(user.id)}
-                                        className="px-3 py-1 buser buser-red-700 text-red-700 rounded hover:bg-red-700 hover:text-white"
-                                    >
-                                        Delete
-                                    </button>
-                                {/*<button
-                                    onClick={()=> {
-                                        setSelectedUser(user)
-                                        setModalOpen(true)
-                                    }}
-                                    className="px-3 py-1 buser buser-gray-400 text-gray-700 rounded hover:bg-gray-100"
-                                >
-                                    View
-                                </button>*/}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
             </div>
         )}
 
