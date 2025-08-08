@@ -3,18 +3,14 @@ import imga from "./ARGAnisme.webp";
 import imga2 from "../../../favicon2.ico";
 import { useEffect, useState } from "react";
 import {authService} from "../../services/AuthService.tsx";
-import {buildErrorMessage} from "vite";
 
 
 export default function Nav() {
     const connected = authService.isAuthenticated();
-    const admin = authService.isAdmin();
     const location = useLocation();
     const isHomePage = location.pathname === '/';
     const navigate = useNavigate();
     const [transparent, setTransparent] = useState(true);
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [loading, setLoading] = useState(false);
 
 
     useEffect(() => {
@@ -31,8 +27,11 @@ export default function Nav() {
 
 
     const navigateToHome = (id: string) => {
-        navigate('/');
-        document.getElementById(id)?.scrollIntoView({behavior: "smooth"});
+        if (location.pathname === "/"){
+            document.getElementById(id)?.scrollIntoView({behavior: "smooth"})
+        } else {
+            navigate('/', { state: { scrollToId: id } });
+        }
     }
 
 
@@ -90,11 +89,18 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <button onClick={() => {
+                            <a onClick={() => {
                                 navigateToHome("services")
-                            }} className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            }} className="cursor-pointer block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0 ">
                                 Services
-                            </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a onClick={() => {
+                                navigateToHome("arganquality")
+                            }} className="cursor-pointer block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                                Argan oil
+                            </a>
                         </li>
                         <li>
                             <Link to="/products" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
@@ -102,9 +108,11 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            <a onClick={() => {
+                                navigateToHome("about")
+                            }} className="cursor-pointer block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 About
-                            </Link>
+                            </a>
                         </li>
                         <li>
                             <Link to="/contact" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">

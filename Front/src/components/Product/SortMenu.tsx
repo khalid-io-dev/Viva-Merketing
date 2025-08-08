@@ -70,12 +70,12 @@ export default function SortMenu({SendToParentProducts}: Props){
     {/* SVGs */}
 
     const down = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"
-                      fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round">
+                      fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="6 10 12 16 18 10" />
         <polyline points="6 18 12 24 18 18" />
     </svg>
 
-    const up = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round">
+    const up = <svg width="32" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="6 24 12 18 18 24" />
         <polyline points="6 16 12 10 18 16" />
     </svg>

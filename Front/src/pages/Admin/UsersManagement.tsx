@@ -28,7 +28,6 @@ export default function UsersManagement(){
     const [modal, setModalOpen] = useState(false);
     const admin = authService.isAdmin();
     const [selecteduser, setSelectedUser] = useState<User>()
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     /* check admin access */
@@ -138,7 +137,7 @@ return (
 
                 {/* admins */}
                 <div>
-                    <h1 className="text-red-700 text-3xl font-mono pb-6 underline font-bold">Administrators</h1>
+                    <h1 className="text-red-700 text-3xl font-mono pb-6 font-bold"><span className="p-2">Administrators</span></h1>
                     <div className="mx-auto max-w-14xl">
                         <table className=" bg-white/70 w-full p-8 mb-8 rounded-3xl ">
                             <thead>
@@ -197,7 +196,7 @@ return (
                 {/* Customers */}
                 <div className="mx-auto max-w-14xl">
 
-                    <h1 className="text-blue-700 text-3xl font-mono pb-6 underline font-bold">Customers</h1>
+                    <h1 className="text-indigo-700 text-3xl font-mono pb-6 font-bold"><span className=" p-2">Customers</span></h1>
                     <table className=" bg-white/70 w-full p-8 mb-8 rounded-3xl ">
                              <thead>
                             <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
@@ -206,7 +205,6 @@ return (
                                 <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Last name</th>
                                 <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Mail</th>
                                 <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Phone</th>
-                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">role</th>
                                 <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                             </tr>
                             </thead>
@@ -218,7 +216,6 @@ return (
                                     <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
                                     <td className="py-4 px-6 text-slate-600">{user.email}</td>
                                     <td className="py-4 px-6 text-slate-600">{user.phone}</td>
-                                    <td className="py-4 px-6 text-slate-600">{user.roles.map(user => user.name)}</td>
                                     <td className="py-4 px-6">
                                         <div className="flex items-center space-x-3">
                                             <button
@@ -235,7 +232,7 @@ return (
                                                 </svg>
                                                 Delete
                                             </button>
-                                            {/* <button
+                                            {<button
                                                 onClick={() => {
                                                   setSelectedUser(user);
                                                   setModalOpen(true);
@@ -243,7 +240,7 @@ return (
                                                 className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
                                               >
                                                 Edit
-                                              </button> */}
+                                              </button> }
                                         </div>
                                     </td>
                                 </tr>
@@ -297,5 +294,11 @@ return (
             </div>
         )}
     </section>
+
+
+
+
+
+
 );
 }

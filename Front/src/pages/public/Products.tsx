@@ -104,12 +104,25 @@ export default function ProductList() {
                                         className="transition duration-200 transform hover:scale-[1.02] hover:shadow-lg border border-gray-200 rounded-md overflow-hidden flex flex-col bg-white"
                                     >
                                         {/* Affiche l'image si elle existe */}
-                                        {product.image?.name && (
-                                            <img
-                                                src={`http://localhost:8000/storage/${product.image.name}`}
-                                                alt={product.name}
-                                                className="w-full h-64 object-cover"
-                                            />
+                                        {product.image[0].name && (
+                                            <div className="relative">
+                                                <img
+                                                    src={`http://localhost:8000/storage/${product.image[0].name}`}
+                                                    alt={product.name}
+                                                    className="w-full h-64 object-cover"
+                                                />
+                                                {product.stock === 0 && (
+                                                    <div>
+                                                        <a className="absolute top-0 text-red-700 border border-red-900 rounded-tl bg-red-200">Out of stock</a>
+                                                    </div>
+                                                )}
+                                                {product.stock < 20 && product.stock !== 0 && (
+                                                    <div>
+                                                        <a className="absolute top-0 text-orange-700 border border-orange-900 rounded-tl bg-orange-200">Almost out of stock</a>
+                                                    </div>
+                                                )}
+
+                                            </div>
                                         )}
 
                                         {/* Informations produit */}

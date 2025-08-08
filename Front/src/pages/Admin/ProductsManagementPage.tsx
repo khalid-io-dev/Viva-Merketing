@@ -24,7 +24,7 @@ interface FormData {
     description: string;
     price: string;
     stock: string;
-    image: File | null;
+    image: File[] | null;
     category_id: string;
 }
 
@@ -49,7 +49,7 @@ export default function ProductsManagementPage() {
         description: "",
         price: "",
         stock: "",
-        image: null,
+        image: [],
         category_id: "",
     });
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
@@ -123,7 +123,12 @@ export default function ProductsManagementPage() {
             data.append("price", formData.price);
             data.append("stock", formData.stock);
             data.append("category_id", formData.category_id);
-            if (formData.image) data.append("image", formData.image);
+
+            if (formData.image) {
+                formData.image.forEach((file) => {
+                    data.append("image[]", file);
+                });
+            }
 
             // For Laravel, we need to add _method for PUT requests
             if (editProduct) {
@@ -141,7 +146,7 @@ export default function ProductsManagementPage() {
             console.log("🔍 Submit response:", result);
             fetchProducts(currentPage);
             setModalOpen(false);
-            setFormData({ name: "", description: "", price: "", stock: "", image: null, category_id: "" });
+            setFormData({ name: "", description: "", price: "", stock: "", image: [], category_id: "" });
             setEditProduct(null);
         } catch (error: any) {
             console.error("Failed to save product:", error);
@@ -206,7 +211,7 @@ export default function ProductsManagementPage() {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
+        const file = e.target.files ? Array.from(e.target.files) : null;
         setFormData({ ...formData, image: file });
         setErrors({ ...errors, image: "" });
     };
@@ -351,7 +356,7 @@ export default function ProductsManagementPage() {
                                                 <div className="relative">
                                                     {product.image ?  (
                                                         <img
-                                                            src={"http://localhost:8000/storage/" + product.image['name']}
+                                                            src={"http://localhost:8000/storage/" + product.image[0].name}
                                                             alt={product.name}
                                                             className="w-16 h-16 object-cover rounded-xl shadow-md ring-2 ring-white"
                                                         />
@@ -619,6 +624,7 @@ export default function ProductsManagementPage() {
                                                 accept="image/*"
                                                 className="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
                                                 disabled={loading}
+                                                multiple
                                             />
                                             <div className="mt-2 text-xs text-slate-500">
                                                 Supported formats: JPG, PNG, GIF. Max size: 2MB

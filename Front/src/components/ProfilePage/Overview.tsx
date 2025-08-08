@@ -111,7 +111,7 @@ export default function Overview() {
                 data.password = password;
             }
 
-            const result = await makeAuthenticatedRequest(`${API_URL}/profile`, {
+            await makeAuthenticatedRequest(`${API_URL}/profile`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -206,7 +206,7 @@ export default function Overview() {
                             <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Number</th>
                             <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Mail</th>
                             <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Password</th>
-                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Edit</th>
+                            <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Action</th>
                         </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">

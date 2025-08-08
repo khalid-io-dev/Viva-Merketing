@@ -21,13 +21,17 @@ export default function AboutUs() {
                     </p>
                 </section>
 
-                {/* Section Mission */}
                 <section className="bg-white rounded-lg shadow p-8">
                     <p className="text-gray-700 leading-relaxed font-normal text-xl">
                         {desc1}
                     </p>
                 </section>
 
+                <section className="bg-white rounded-lg shadow p-8">
+                    <p className="text-gray-700 leading-relaxed font-normal text-xl">
+                        {desc2}
+                    </p>
+                </section>
 
                 {/* Section Values */}
                 <section className="bg-white rounded-lg shadow p-8">
@@ -43,6 +47,7 @@ export default function AboutUs() {
                         <li>Creams</li>
                     </ul>
                 </section>
+
             </main>
 
             <WhyUs />

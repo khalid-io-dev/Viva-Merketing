@@ -34,10 +34,10 @@ export default function Services() {
     return (
         <div className="flex flex-col  w-full h-full items-center p-24" id="services">
             <h1 className="text-4xl text-black font-mono ">{titre1}</h1>
-            <p className="text-sm    text-gray-800 p-2 font-normal">{description}</p>
+            <p className="text-sm    text-gray-800 p-2 font-normal" >{description}</p>
             <div className="w-full h-0.5 w-1/3 bg-black my-6" />
 
-            <div className="flex flex-col md:grid grid-cols-3 w-full h-auto p-6">
+            <div className="flex flex-col md:grid grid-cols-3 w-full h-auto p-6" >
                 {cat.map((categories) => (
                     <div className="flex flex-col items-center ">
                         <h1 className="font-mono text-3xl text-black first-letter:text-emerald-600 first-letter:text-4xl">{categories.title}</h1>

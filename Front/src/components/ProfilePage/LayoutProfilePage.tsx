@@ -6,14 +6,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const admin = authService.isAdmin();
     const connected = authService.isAuthenticated();
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const handleLogout = async (e: React.FormEvent) => {
+    const handleLogout = async () => {
         try {
             console.log("Log out successful:", await authService.logout());
             navigate("/login")
             await authService.logout()
-        } catch (err: any) {
+        } catch (err : any) {
             try {
                 const errorData = JSON.parse(err.message);
                 setErrors(errorData);
@@ -21,8 +20,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 setErrors({ general: err.message || "Logout failed." });
             }
             console.error("Logout error:", err);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -39,7 +36,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             { connected &&
             <div className=" w-[450px] text-black text-xl p-10  font-mono">
                 <div className="flex flex-col gap-10  p-10 items-center">
-                    <Link to="/profile"><button>Overview</button></Link>
+                    <Link to="/profile"><button className={"text-red-800 font-bold"}>Overview</button></Link>
                     {!admin ?
                         (<Link to="/orders"><button>{"My Orders"}</button></Link>) :
                         (<Link to="/admin/dashboard/products"><button>{"Dashboard"}</button></Link>

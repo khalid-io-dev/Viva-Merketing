@@ -16,14 +16,13 @@ const AdminDashboard: React.FC<{ children: React.ReactNode}> = ({children}) => {
 
 
     return (
-        <div className="flex h-screen font-sans ">
+        <div className="flex h-screen font-sans bg-gradient-to-r from-indigo-50 to-white">
 
 
             {/* Sidebar */}
-            <aside className="w-64 bg-gray-800 text-gray-100 flex flex-col p-6">
-                <h1 className="font-mono font-bold text-4xl uppercase underline text-center pb-20">Dashboard</h1>
-                <nav className="flex flex-col space-y-4">
-                    <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-700 transition-colors">
+            <aside className="w-64 text-gray-100 flex flex-col p-6 min-h-screen border border-gray-350 shadow">
+                <nav className="flex flex-col space-y-4 ">
+                    <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-300 text-black border border-black">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="20"
@@ -42,21 +41,21 @@ const AdminDashboard: React.FC<{ children: React.ReactNode}> = ({children}) => {
 
                     <Link
                         to="/admin/dashboard/products"
-                        className="block px-4 py-3 font-mono rounded hover:bg-gray-700 transition-colors"
+                        className="block px-4 py-3 font-mono rounded hover:bg-gray-100 text-black"
                     >
                         Product management
                     </Link>
 
                     <Link
                         to="/admin/dashboard/users"
-                        className="block px-4 py-3 font-mono rounded hover:bg-gray-700 transition-colors"
+                        className="block px-4 py-3 font-mono rounded hover:bg-gray-100 text-black"
                     >
                         Users management
                     </Link>
 
                     <Link
                         to="/admin/dashboard/orders"
-                        className="block px-4 py-3 font-mono rounded hover:bg-gray-700 transition-colors"
+                        className="block px-4 py-3 font-mono rounded hover:bg-gray-100 text-black"
                     >
                         Orders management
                     </Link>

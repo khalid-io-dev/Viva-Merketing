@@ -10,10 +10,8 @@ import Blogs from "./pages/public/Blogs.tsx";
 import '../ressources/css/app.css';
 import 'flowbite';
 import Layout from "./components/layout/Layout.tsx"
-import Profile from "./pages/public/Profile.tsx";
 import DetailProduct from "./pages/public/DetailProduct.tsx";
 import ProductsManagementPage from "./pages/Admin/ProductsManagementPage.tsx";
-import ProfilePage from "./pages/public/ProfilePage.tsx";
 import LayoutProfilePage from "./components/ProfilePage/LayoutProfilePage.tsx";
 import Account from "./components/ProfilePage/Account.tsx";
 import OrdersManagement from './components/ProfilePage/OrdersManagement.tsx';

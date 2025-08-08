@@ -8,7 +8,7 @@ export default function AboutHomePage(){
 
 
     return (
-        <div className="relative flex flex-col items-center w-full">
+        <div className="relative flex flex-col items-center w-full" id="about"  >
             <img
                 src={imageFond}
                 alt="John Smith"
@@ -21,7 +21,7 @@ export default function AboutHomePage(){
 
             {/* Conteneur texte + bouton centré au milieu de l'image */}
             <div className="absolute inset-0 flex flex-col justify-center items-center text-white px-6 text-center space-y-4">
-                <h1 className="text-4xl font-bold">{title}</h1>
+                <h1 className="text-4xl font-bold" >{title}</h1>
                 <p className="text-2xl">{description}</p>
 
                 <Link to="/about" className="bg-black hover:bg-white text-white hover:text-black hovfont-semibold px-6 py-2 rounded-none transition">

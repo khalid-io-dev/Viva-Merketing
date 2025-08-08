@@ -44,32 +44,42 @@ class AdminProductController extends Controller
     public function store(Request $request)
     {
         Log::info('Store product request', ['input' => $request->all(), 'files' => $request->hasFile('image')]);
+
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+                'image.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
                 'category_id' => 'required|exists:categories,id',
             ]);
 
+            // Création du produit
+            $product = Product::create([
+                'name' => $validated['name'],
+                'description' => $validated['description'],
+                'price' => $validated['price'],
+                'stock' => $validated['stock'],
+                'category_id' => $validated['category_id'],
+            ]);
 
+            // Stockage des images (si présentes)
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('product_images', 'public');
-                Log::info('Image stored', ['path' => $validated['image']]);
+                foreach ($request->file('image') as $file) {
+                    $path = $file->store('product_images', 'public');
+                    Log::info('Image stored', ['path' => $path]);
+
+                    // Enregistrement de chaque image dans la table liée
+                    $product->image()->create([
+                        'name' => $path
+                    ]);
+                }
             }
-
-            $product = Product::create(['name' => $validated['name'],
-            'description' => $validated['description'],
-            'price' => $validated['price'],
-            'stock' => $validated['stock'],
-            'category_id' => $validated['category_id']]);
-
-            $product->image()->create(['name'=> $validated['image']]);
 
             Log::info('Product created', ['id' => $product->id]);
             return response()->json($product, 201);
+
         } catch (\Exception $e) {
             Log::error('Failed to store product', [
                 'error' => $e->getMessage(),
@@ -78,6 +88,7 @@ class AdminProductController extends Controller
             return response()->json(['error' => 'Failed to create product'], 500);
         }
     }
+
 
     public function update(Request $request, $id)
     {
@@ -129,7 +140,7 @@ class AdminProductController extends Controller
             $product = Product::findOrFail($id);
             if ($product->image) {
                 $path = $product->image;
-                Storage::disk('public')->delete($product->image->name);
+                Storage::disk('public')->delete($product->image);
                 Log::info('Image deleted', ['path' => $product->image]);
             }
             $product->delete();
