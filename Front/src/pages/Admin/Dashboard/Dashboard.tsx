@@ -21,9 +21,7 @@ const AdminDashboard: React.FC<{ children: React.ReactNode}> = ({children}) => {
 
             {/* Sidebar */}
             <aside className="w-64 bg-gray-800 text-gray-100 flex flex-col p-6">
-                <h2 className="mb-10 text-2xl font-semibold bg-white text-gray-800 px-4 py-3 rounded">
-                    Dashboard Administrator
-                </h2>
+                <h1 className="font-mono font-bold text-4xl uppercase underline text-center pb-20">Dashboard</h1>
                 <nav className="flex flex-col space-y-4">
                     <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-700 transition-colors">
                         <svg

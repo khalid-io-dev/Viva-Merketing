@@ -185,7 +185,7 @@ export default function SortMenu({SendToParentProducts}: Props){
                 )}
             </div>
                 <div className="flex justify-center pt-8">
-                    <button disabled={loading} onClick={handleSortClick} className="bg-emerald-600 border disabled:bg-gray-700  justify-center w-24 rounded hover:bg-emerald-700" type="button">Sort</button>
+                    <button disabled={loading} onClick={handleSortClick} className=" border border-gray-500 disabled:bg-gray-700  justify-center w-24 hover:bg-black hover:text-white rounded-none" type="button">Sort</button>
                 </div>
             </form>
             </div>

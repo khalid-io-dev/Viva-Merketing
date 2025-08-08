@@ -3,6 +3,7 @@ import imga from "./ARGAnisme.webp";
 import imga2 from "../../../favicon2.ico";
 import { useEffect, useState } from "react";
 import {authService} from "../../services/AuthService.tsx";
+import {buildErrorMessage} from "vite";
 
 
 export default function Nav() {
@@ -27,6 +28,14 @@ export default function Nav() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
+
+    const navigateToHome = (id: string) => {
+        navigate('/');
+        document.getElementById(id)?.scrollIntoView({behavior: "smooth"});
+    }
+
+
 
     return (
         <nav
@@ -81,9 +90,11 @@ export default function Nav() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/services" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
+                            <button onClick={() => {
+                                navigateToHome("services")
+                            }} className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">
                                 Services
-                            </Link>
+                            </button>
                         </li>
                         <li>
                             <Link to="/products" className="block py-2 px-3 rounded-sm hover:text-emerald-700 md:p-0">

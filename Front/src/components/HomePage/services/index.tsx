@@ -32,7 +32,7 @@ export default function Services() {
     ];
 
     return (
-        <div className="flex flex-col  w-full h-full items-center p-24">
+        <div className="flex flex-col  w-full h-full items-center p-24" id="services">
             <h1 className="text-4xl text-black font-mono ">{titre1}</h1>
             <p className="text-sm    text-gray-800 p-2 font-normal">{description}</p>
             <div className="w-full h-0.5 w-1/3 bg-black my-6" />

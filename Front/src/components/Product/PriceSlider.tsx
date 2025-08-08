@@ -22,7 +22,7 @@ const PriceSlider = () => {
                         style={{
                             ...props.style,
                             height: '6px',
-                            background: 'linear-gradient(to right, #ccc, #116630, #ccc)',
+                            background: 'linear-gradient(to right, #ccc, #464646, #ccc)',
                             borderRadius: '3px',
                         }}
                     >
@@ -32,7 +32,7 @@ const PriceSlider = () => {
                 renderThumb={({ props }) => (
                     <div
                         {...props}
-                        className="h-5 w-5 rounded-full bg-emerald-600 shadow"
+                        className="h-5 w-5 rounded-full border border-black bg-white shadow"
                     />
                 )}
             />

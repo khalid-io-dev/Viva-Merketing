@@ -2,22 +2,33 @@ import {useEffect, useState} from "react";
 import {makeAuthenticatedRequest, API_URL} from "../../services/Requests.tsx";
 import {authService} from "../../services/AuthService.tsx";
 
+
+interface roles {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
 interface User {
     id: number;
     name: string;
     email: string;
     phone: number;
     password: string;
+    roles: roles[];
 }
 
 export default function UsersManagement(){
 
     const[users, setUsers] = useState<User[]>([])
+    const[adminslist, setAdminslist] = useState<User[]>([])
+    const[customerslist, setcustomerslist] = useState<User[]>([])
     const [errors, setErrors] = useState<Record<string, string | string[]>>({});
     const [loading, setLoading] = useState(false);
     const [modal, setModalOpen] = useState(false);
     const admin = authService.isAdmin();
     const [selecteduser, setSelectedUser] = useState<User>()
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     /* check admin access */
@@ -54,6 +65,14 @@ export default function UsersManagement(){
             setLoading(true);
             const data = await makeAuthenticatedRequest(`${API_URL}` + FetchUrl);
             setUsers(data);
+
+            setAdminslist(data.filter((user: User) =>
+                user.roles.some(role => role.name === 'admin')
+            ));
+            setcustomerslist(data.filter((user: User) =>
+                user.roles.some(role => role.name === 'customer')
+            ));
+
         } catch (error) {
             console.error("Failed to fetch user:", error);
             setErrors({ general: "Failed to load user" });
@@ -64,7 +83,7 @@ export default function UsersManagement(){
 
     useEffect(() => {
         fetchUsers()
-    }, []);
+        }, []);
 
 return (
     <section className="antialiased  p-12 w-full h-full">
@@ -117,7 +136,10 @@ return (
                     </div>
                 )}
 
-                <div className="mx-auto max-w-14xl">
+                {/* admins */}
+                <div>
+                    <h1 className="text-red-700 text-3xl font-mono pb-6 underline font-bold">Administrators</h1>
+                    <div className="mx-auto max-w-14xl">
                         <table className=" bg-white/70 w-full p-8 mb-8 rounded-3xl ">
                             <thead>
                             <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
@@ -130,7 +152,7 @@ return (
                             </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                            {users.map((user) => (
+                            {adminslist.map((user) => (
                                 <tr key={user.id} className="hover:bg-blue-50/50 transition-colors duration-150 ">
                                     <td className="py-4 px-6 font-semibold text-slate-800">{user.id}</td>
                                     <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
@@ -154,14 +176,74 @@ return (
                                                 Delete
                                             </button>
                                             {/* <button
-                onClick={() => {
-                  setSelectedUser(user);
-                  setModalOpen(true);
-                }}
-                className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
-              >
-                View
-              </button> */}
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setModalOpen(true);
+                                                }}
+                                                className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
+                                            >
+                                                View
+                                            </button> */}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                {/* Customers */}
+                <div className="mx-auto max-w-14xl">
+
+                    <h1 className="text-blue-700 text-3xl font-mono pb-6 underline font-bold">Customers</h1>
+                    <table className=" bg-white/70 w-full p-8 mb-8 rounded-3xl ">
+                             <thead>
+                            <tr className="bg-gradient-to-r from-slate-50 to-blue-50 backdrop-blur-sm">
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">User ID</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">First name</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Last name</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Mail</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Phone</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">role</th>
+                                <th className="py-4 px-6 text-left text-sm font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                            {customerslist.map((user) => (
+                                <tr key={user.id} className="hover:bg-blue-50/50 transition-colors duration-150 ">
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.id}</td>
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
+                                    <td className="py-4 px-6 font-semibold text-slate-800">{user.name}</td>
+                                    <td className="py-4 px-6 text-slate-600">{user.email}</td>
+                                    <td className="py-4 px-6 text-slate-600">{user.phone}</td>
+                                    <td className="py-4 px-6 text-slate-600">{user.roles.map(user => user.name)}</td>
+                                    <td className="py-4 px-6">
+                                        <div className="flex items-center space-x-3">
+                                            <button
+                                                onClick={() => handleDeleteUser(user.id)}
+                                                className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-sm font-medium"
+                                            >
+                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                    />
+                                                </svg>
+                                                Delete
+                                            </button>
+                                            {/* <button
+                                                onClick={() => {
+                                                  setSelectedUser(user);
+                                                  setModalOpen(true);
+                                                }}
+                                                className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-sm font-medium"
+                                              >
+                                                Edit
+                                              </button> */}
                                         </div>
                                     </td>
                                 </tr>
