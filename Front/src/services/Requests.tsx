@@ -42,7 +42,6 @@ export const makeAuthenticatedRequest = async (url: string, options: RequestInit
             }
 
             const error = new Error(errorMessage);
-            // ✅ Ajout important : attacher les erreurs détaillées
             (error as any).errors = errorData.errors;
             throw error;
         }

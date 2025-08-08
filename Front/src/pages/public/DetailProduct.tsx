@@ -112,12 +112,17 @@ export default function DetailProduct() {
                         <p className=" text-4xl md:text-sm text-gray-500 whitespace-pre-line">{product.description}</p>
                     </div>
                     <div id="DPButtons" className="flex flex-row p-4 gap-4 w-fit items-start">
-                        <button disabled={loading} className="bg-black text-white px-4 py-2  border-gray-300 rounded-none font-medium shadow hover:bg-gray-800 transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
+                        <button hidden={product.stock === 0} disabled={loading} className="bg-black text-white px-4 py-2  border-gray-300 rounded-none font-medium shadow hover:bg-gray-800 transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
                             Add to Cart
                         </button>
-                        <button disabled={loading} className="bg-white text-black border border-gray-300 px-4 py-2 rounded-none font-medium shadow hover:bg-black hover:text-white transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
+                        <button hidden={product.stock === 0} disabled={loading} className="bg-white text-black border border-gray-300 px-4 py-2 rounded-none font-medium shadow hover:bg-black hover:text-white transition duration-300 ease-in-out w-52 h-14 md:h-auto md:w-auto">
                             Checkout
                         </button>
+                        {product.stock === 0 && (
+                            <div className="items">
+                            <span className="text-2xl font-mono text-red-700 border border-red-600">This is out of stock.</span>
+                            </div>) }
+
                     </div>
 
                 </div>)
